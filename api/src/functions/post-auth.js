@@ -12,7 +12,7 @@ app.http('post-auth', {
         const email = request.body.email;
 
         if (!email) {
-            return { status: 400, body: "Email is required" };
+            return { status: 400, body: email };
         }
 
         // Setup your SQL connection
