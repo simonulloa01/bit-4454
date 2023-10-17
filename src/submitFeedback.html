@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Member Evaluation</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">Team Member Evaluation</h2>
+        <form>
+
+            <div class="form-group">
+                <label for="name">Team Member</label>
+                <input type="text" class="form-control" id="name" placeholder="John Doe">
+            </div>
+
+            <div class="form-group">
+                <label for="knowledge">Disciplinary and multidisciplinary knowledge</label>
+                <select class="form-control" id="knowledge"></select>
+            </div>
+
+            <div class="form-group">
+                <label for="skills">Intellectual and creative skills (Critical thinking and problem solving)</label>
+                <select class="form-control" id="skills"></select>
+            </div>
+
+            <div class="form-group">
+                <label for="interpersonal">Interpersonal Skills (Collaboration, leadership, and communication)</label>
+                <select class="form-control" id="interpersonal"></select>
+            </div>
+
+            <div class="form-group">
+                <label for="citizenship">Global citizenship (Intercultural understanding & sensitivity, ethics & social
+                    understanding)</label>
+                <select class="form-control" id="citizenship"></select>
+            </div>
+
+            <div class="form-group">
+                <label for="mastery">Personal mastery (Self-directedness & meta-learning, resilience &
+                    positivity)</label>
+                <select class="form-control" id="mastery"></select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <script>
+        $(document).ready(function () {
+            // Define the options to be added
+            var options = [
+                { text: '0 - Never', value: '0' },
+                { text: '1 - Rarely', value: '1' },
+                { text: '2 - Sometimes', value: '2' },
+                { text: '3 - Often', value: '3' },
+                { text: '4 - Very Often', value: '4' },
+                { text: '5 - Always', value: '5' }
+            ];
+
+            // Function to add options to a select element
+            function addOptions(selectElement, options) {
+                options.forEach(function (option) {
+                    var newOption = new Option(option.text, option.value);
+                    $(selectElement).append(newOption);
+                });
+            }
+
+            // Add options to each select element
+            $('select.form-control').each(function () {
+                addOptions(this, options);
+            });
+        });
+        $(document).ready(function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            var studentID = urlParams.get('studentID');
+
+            // Now you have the studentID, you can make an AJAX request to your server to the list of names
+            //TODO
+        });
+    </script>
