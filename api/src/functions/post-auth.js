@@ -9,7 +9,7 @@ app.http('post-auth', {
     handler: async (request, context) => {
         context.log('Processing a login request.');
 
-        const email = (request.query.email || (request.body && request.body.email));
+        const email = request.body.email;
 
         if (!email) {
             return { status: 400, body: "Email is required" };
@@ -17,10 +17,10 @@ app.http('post-auth', {
 
         // Setup your SQL connection
         const db = mysql.createConnection({
-            host: 'your_host', // your host
-            user: 'your_username', // your username
-            password: 'your_password', // your password
-            database: 'your_database' // your database name
+            host: 'bitsem.mysql.database.azure.com',
+            user: 'clay',
+            password: 'Bit44542023',
+            database: 'main'
         });
 
         db.connect();
