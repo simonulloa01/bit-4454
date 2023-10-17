@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +8,6 @@
   <link rel="stylesheet" href="styles.css">
   <title>SMU Peer Review Login</title>
 </head>
-
 <body>
   <main>
     <h1 class="text-center">SMU Peer Evaluation Tool</h1>
@@ -17,7 +15,7 @@
       <!-- Login Form Start -->
       <div class="row justify-content-center">
         <div class="col-12 col-md-4">
-          <form>
+          <form id="loginForm">
             <div class="form-group">
               <label for="email">Email address:</label>
               <input type="email" class="form-control" id="email" aria-describedby="emailHelp" required>
@@ -31,6 +29,32 @@
       <p id="test"></p>
     </div>
   </main>
-</body>
 
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      var email = document.getElementById('email').value;
+
+      var xhr = new XMLHttpRequest(); // Create a new XMLHttpRequest object
+
+      xhr.open("POST", "/api/post-auth", true); // Replace with your Azure function URL
+      xhr.setRequestHeader("Content-Type", "application/json");
+
+      xhr.onreadystatechange = function() { // Call a function when the state changes.
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+          // Request finished. Do processing here.
+          console.log(xhr.responseText); // For debugging - see the response in console
+          var response = JSON.parse(xhr.responseText);
+          // You might want to redirect, or do something else with the response. For instance:
+          window.location.href = response.link; // This would redirect to the link received from the Azure function.
+        }
+      }
+
+      var data = JSON.stringify({"email": email}); // Convert email data to JSON
+
+      xhr.send(data); // Send the request
+    });
+  </script>
+</body>
 </html>
