@@ -7,7 +7,10 @@
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
-    "@azure/functions": "^4.0.0"
+    "@azure/functions": "^4.0.0",
+    "mysql": "^2.18.1",
+    "axios": "^0.24.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {},
   "main": "src/functions/*.js"
