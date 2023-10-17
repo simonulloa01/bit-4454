@@ -4,21 +4,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Add Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <title>SMU Peer Review Login</title>
 </head>
 
 <body>
   <main>
-    <h1>SMU Peer Evaluation tool</h1>
-    <p id="test"></p>
+    <h1 class="text-center">SMU Peer Evaluation Tool</h1>
+    <div class="container">
+      <!-- Login Form Start -->
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-4">
+          <form>
+            <div class="form-group">
+              <label for="email">Email address:</label>
+              <input type="email" class="form-control" id="email" aria-describedby="emailHelp" required>
+              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+      <!-- Login Form End -->
+      <p id="test"></p>
+    </div>
   </main>
 </body>
 
-<script>
-   (async function() {
-        const { text } = await( await fetch(`/api/send-auth`)).json();
-        document.querySelector('#test').textContent = text;
-    }());
-</script>
 </html>
