@@ -82,7 +82,7 @@
         var session_id = urlParams.get('session_id');
         var ScheduleID = urlParams.get('ScheduleID');
         var ReceiverStudentID = urlParams.get('ReceiverStudentID');
-
+        var EvaluationID; // We will set this after the initial fetch
         // Prepare the payload
         var payload = {
             session_id: session_id,
@@ -100,7 +100,7 @@
         })
             .then(response => response.json())
             .then(data => {
-                 
+
                 // Check if the values are not null before setting them
                 if (data.ReceiverName !== null) {
                     $('#name').val(data.ReceiverName.toString());
@@ -120,9 +120,47 @@
                 if (data.PersonalMastery !== null) {
                     $('#mastery').val(data.PersonalMastery.toString());
                 }
+                EvaluationID = data.EvaluationID;
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
+
+        //add submit event listener
+        $('form').submit(function (event) {
+            // Prevent the default form submit behavior
+            event.preventDefault();
+
+            // Prepare the payload with form data and other necessary information
+            var submitPayload = {
+                session_id: session_id,
+                ScheduleID: parseInt(ScheduleID),
+                ReceiverStudentID: parseInt(ReceiverStudentID),
+                EvaluationID: EvaluationID, // This should be set based on the initial data fetched
+                WriterStudentID: 1, // This needs to be dynamically fetched or set
+                CompletionDate: null, // This can be set based on your logic
+                DisciplinaryKnowledge: $('#knowledge').val(),
+                IntellectualSkills: $('#skills').val(),
+                InterpersonalSkills: $('#interpersonal').val(),
+                GlobalCitizenship: $('#citizenship').val(),
+                PersonalMastery: $('#mastery').val()
+            };
+
+            // Make the POST request to submit the data
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:7071/api/SetPeerEvalData",
+                data: JSON.stringify(submitPayload),
+                contentType: "application/json",
+                success: function (response) {
+                    console.log("Data submitted successfully:", response);
+                    // Here, you might want to show a success message or redirect
+                },
+                error: function (error) {
+                    console.error("An error occurred during submission: ", error);
+                    // Here, you might want to show an error message to the user
+                }
+            });
+        });
     });
 </script>
