@@ -74,12 +74,47 @@
             $('select.form-control').each(function () {
                 addOptions(this, options);
             });
-        });
-        $(document).ready(function () {
-            var urlParams = new URLSearchParams(window.location.search);
-            var studentID = urlParams.get('studentID');
 
-            // Now you have the studentID, you can make an AJAX request to your server to the list of names
-            //TODO
+            // Extract parameters from URL
+            var urlParams = new URLSearchParams(window.location.search);
+            var session_id = urlParams.get('session_id');
+            var ScheduleID = urlParams.get('ScheduleID');
+            var ReceiverStudentID = urlParams.get('ReceiverStudentID');
+
+            // Prepare the payload
+            var payload = {
+                session_id: session_id,
+                ScheduleID: parseInt(ScheduleID),
+                ReceiverStudentID: parseInt(ReceiverStudentID)
+            };
+
+            // Make the POST request
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:7071/api/GetPeerEvalData",
+                data: JSON.stringify(payload),
+                contentType: "application/json",
+                success: function (response) {
+                    // Check if the values are not null before setting them
+                    if (response.DisciplinaryKnowledge !== null) {
+                        $('#knowledge').val(response.DisciplinaryKnowledge.toString());
+                    }
+                    if (response.IntellectualSkills !== null) {
+                        $('#skills').val(response.IntellectualSkills.toString());
+                    }
+                    if (response.InterpersonalSkills !== null) {
+                        $('#interpersonal').val(response.InterpersonalSkills.toString());
+                    }
+                    if (response.GlobalCitizenship !== null) {
+                        $('#citizenship').val(response.GlobalCitizenship.toString());
+                    }
+                    if (response.PersonalMastery !== null) {
+                        $('#mastery').val(response.PersonalMastery.toString());
+                    }
+                },
+                error: function (error) {
+                    console.error("An error occurred: ", error);
+                }
+            });
         });
     </script>
