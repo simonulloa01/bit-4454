@@ -78,17 +78,22 @@ app.http('getStudentInfo', {
                     courseId: course.CourseID,
                     professorName: course.ProfessorName,
                     groupId: course.GroupID
+                    
                     // other course related info
                 };
 
                 // Get incomplete peer evaluations for this course for the student
                 let peerReviewQuery = `
                 SELECT 
-                    s.*
+                    s.*,
+                    p.ReceiverStudentID,
+                    CONCAT(st.FirstName, ' ', st.LastName) AS ReceiverName
                 FROM 
                     schedule s
                 LEFT JOIN 
                     peerevaluations p ON s.ScheduleID = p.ScheduleID AND p.WriterStudentID = ?
+                LEFT JOIN
+                    student st ON p.ReceiverStudentID = st.StudentID
                 WHERE 
                     s.CourseID = ? AND 
                     p.CompletionDate IS NULL;

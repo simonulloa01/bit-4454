@@ -52,8 +52,9 @@
       }
 
       var data = JSON.stringify({"email": email}); // Convert email data to JSON
-
+      document.getElementById('emailHelp').innerHTML = "Check your email for a link to login.";
       xhr.send(data); // Send the request
+
     });
   </script>
 </body>
