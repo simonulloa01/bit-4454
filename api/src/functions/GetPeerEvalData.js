@@ -34,28 +34,30 @@ app.http('GetPeerEvalData', {
             // Get the saved data
             let query = `
             SELECT 
-                p.*
+                p.*,
+                CONCAT(st.FirstName, ' ', st.LastName) AS ReceiverName
             FROM 
                 peerevaluations p
             JOIN 
                 sessions s ON p.WriterStudentID = s.student_id
+            JOIN
+                student st ON p.ReceiverStudentID = st.StudentID
             WHERE 
                 s.session_id = ? AND 
                 p.ReceiverStudentID = ? AND 
-                p.ScheduleID = ?;
-         
+                p.ScheduleID = ?;        
             `;
             let [row, fields] = await new Promise((resolve, reject) => {
-                db.query(query, [session_id,receiverStudentID,ScheduleID], function (error, results) {
+                db.query(query, [session_id, receiverStudentID, ScheduleID], function (error, results) {
                     if (error) return reject(error);
                     resolve(results);
                 });
             });
 
             var package = JSON.parse(JSON.stringify(row));
-            return{
+            return {
                 status: 200,
-                body: JSON.stringify(package,null,2)
+                body: JSON.stringify(package, null, 2)
             }
         }
         catch (error) {

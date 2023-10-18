@@ -102,6 +102,9 @@
             .then(data => {
                  
                 // Check if the values are not null before setting them
+                if (data.ReceiverName !== null) {
+                    $('#name').val(data.ReceiverName.toString());
+                }
                 if (data.DisciplinaryKnowledge !== null) {
                     $('#knowledge').val(data.DisciplinaryKnowledge.toString());
                 }
