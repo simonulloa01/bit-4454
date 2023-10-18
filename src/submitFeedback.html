@@ -91,11 +91,14 @@
             // Make the POST request
             $.ajax({
                 type: "POST",
-                url: "http://localhost:7071/api/GetPeerEvalData",
+                url: "http://zealous-plant-073f3f80f.4.azurestaticapps.net/api/GetPeerEvalData",
                 data: JSON.stringify(payload),
                 contentType: "application/json",
                 success: function (response) {
                     // Check if the values are not null before setting them
+                    if (response.ReceiverStudentName !== null) {
+                        $('#name').val(response.ReceiverStudentName.toString());
+                    }
                     if (response.DisciplinaryKnowledge !== null) {
                         $('#knowledge').val(response.DisciplinaryKnowledge.toString());
                     }
