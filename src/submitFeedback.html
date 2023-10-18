@@ -50,74 +50,76 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
-    <script>
-        $(document).ready(function () {
-            // Define the options to be added
-            var options = [
-                { text: '0 - Never', value: '0' },
-                { text: '1 - Rarely', value: '1' },
-                { text: '2 - Sometimes', value: '2' },
-                { text: '3 - Often', value: '3' },
-                { text: '4 - Very Often', value: '4' },
-                { text: '5 - Always', value: '5' }
-            ];
 
-            // Function to add options to a select element
-            function addOptions(selectElement, options) {
-                options.forEach(function (option) {
-                    var newOption = new Option(option.text, option.value);
-                    $(selectElement).append(newOption);
-                });
-            }
+</body>
+<script>
+    $(document).ready(function () {
+        // Define the options to be added
+        var options = [
+            { text: '0 - Never', value: '0' },
+            { text: '1 - Rarely', value: '1' },
+            { text: '2 - Sometimes', value: '2' },
+            { text: '3 - Often', value: '3' },
+            { text: '4 - Very Often', value: '4' },
+            { text: '5 - Always', value: '5' }
+        ];
 
-            // Add options to each select element
-            $('select.form-control').each(function () {
-                addOptions(this, options);
+        // Function to add options to a select element
+        function addOptions(selectElement, options) {
+            options.forEach(function (option) {
+                var newOption = new Option(option.text, option.value);
+                $(selectElement).append(newOption);
             });
+        }
 
-            // Extract parameters from URL
-            var urlParams = new URLSearchParams(window.location.search);
-            var session_id = urlParams.get('session_id');
-            var ScheduleID = urlParams.get('ScheduleID');
-            var ReceiverStudentID = urlParams.get('ReceiverStudentID');
-
-            // Prepare the payload
-            var payload = {
-                session_id: session_id,
-                ScheduleID: parseInt(ScheduleID),
-                ReceiverStudentID: parseInt(ReceiverStudentID)
-            };
-
-            // Make the POST request
-            $.ajax({
-                type: "POST",
-                url: "http://zealous-plant-073f3f80f.4.azurestaticapps.net/api/GetPeerEvalData",
-                data: JSON.stringify(payload),
-                contentType: "application/json",
-                success: function (response) {
-                    // Check if the values are not null before setting them
-                    if (response.ReceiverStudentName !== null) {
-                        $('#name').val(response.ReceiverStudentName.toString());
-                    }
-                    if (response.DisciplinaryKnowledge !== null) {
-                        $('#knowledge').val(response.DisciplinaryKnowledge.toString());
-                    }
-                    if (response.IntellectualSkills !== null) {
-                        $('#skills').val(response.IntellectualSkills.toString());
-                    }
-                    if (response.InterpersonalSkills !== null) {
-                        $('#interpersonal').val(response.InterpersonalSkills.toString());
-                    }
-                    if (response.GlobalCitizenship !== null) {
-                        $('#citizenship').val(response.GlobalCitizenship.toString());
-                    }
-                    if (response.PersonalMastery !== null) {
-                        $('#mastery').val(response.PersonalMastery.toString());
-                    }
-                },
-                error: function (error) {
-                    console.error("An error occurred: ", error);
-                }
-            });
+        // Add options to each select element
+        $('select.form-control').each(function () {
+            addOptions(this, options);
         });
-    </script>
+
+        // Extract parameters from URL
+        var urlParams = new URLSearchParams(window.location.search);
+        var session_id = urlParams.get('session_id');
+        var ScheduleID = urlParams.get('ScheduleID');
+        var ReceiverStudentID = urlParams.get('ReceiverStudentID');
+
+        // Prepare the payload
+        var payload = {
+            session_id: session_id,
+            ScheduleID: parseInt(ScheduleID),
+            ReceiverStudentID: parseInt(ReceiverStudentID)
+        };
+
+        // Make the POST request using Fetch API
+        fetch('api/GetPeerEvalData', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        })
+            .then(response => response.json())
+            .then(data => {
+                 
+                // Check if the values are not null before setting them
+                if (data.DisciplinaryKnowledge !== null) {
+                    $('#knowledge').val(data.DisciplinaryKnowledge.toString());
+                }
+                if (data.IntellectualSkills !== null) {
+                    $('#skills').val(data.IntellectualSkills.toString());
+                }
+                if (data.InterpersonalSkills !== null) {
+                    $('#interpersonal').val(data.InterpersonalSkills.toString());
+                }
+                if (data.GlobalCitizenship !== null) {
+                    $('#citizenship').val(data.GlobalCitizenship.toString());
+                }
+                if (data.PersonalMastery !== null) {
+                    $('#mastery').val(data.PersonalMastery.toString());
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+</script>
