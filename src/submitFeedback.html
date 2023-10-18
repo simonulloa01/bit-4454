@@ -149,7 +149,7 @@
             // Make the POST request to submit the data
             $.ajax({
                 type: "POST",
-                url: "http://localhost:7071/api/SetPeerEvalData",
+                url: "api/SetPeerEvalData",
                 data: JSON.stringify(submitPayload),
                 contentType: "application/json",
                 success: function (response) {
