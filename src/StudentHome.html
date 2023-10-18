@@ -1,18 +1,60 @@
-<!-- FILEPATH: /c:/Users/simon/source/repos/bit-4454/src/StudentHome.html -->
-
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>SMU Student Peer Evaluation System</title>
-    </head>
-    <body>
-        <h1>Welcome to the SMU Student Peer Evaluation System</h1>
-        <p>Use this system to evaluate your peers and receive evaluations from them.</p>
-        <ul>
-            <li><a href="evaluations.html">View Evaluations</a></li>
-            <li><a href="submit-evaluation.html">Submit an Evaluation</a></li>
-            <li><a href="view-profile.html">View Your Profile</a></li>
-            <li><a href="edit-profile.html">Edit Your Profile</a></li>
-        </ul>
-    </body>
+
+<head>
+    <title>SMU Student Peer Evaluation System</title>
+    <script>
+        // Function to parse query string
+        function getParameterByName(name, url = window.location.href) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        // Function to get student info
+        async function getStudentInfo() {
+            const sessionId = getParameterByName('session');  // Get session id from URL
+            if (!sessionId) {
+                console.error('Session ID not provided in the URL');
+                return;
+            }
+
+            try {
+                const response = await fetch('api/getStudentInfo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ session_id: sessionId }), // send the session_id in the request body
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                // Parse the JSON from the response
+                const data = await response.json();
+
+                // Use the data from the response
+                document.getElementById('studentInfo').innerHTML = JSON.stringify(data, null, 2);
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
+        }
+
+        // Execute the function when the window loads
+        window.onload = getStudentInfo;
+    </script>
+</head>
+
+<body>
+    <h1>Welcome to the SMU Student Peer Evaluation System</h1>
+    <p>Use this system to evaluate your peers and receive evaluations from them.</p>
+    <!-- Container to display the data -->
+    <pre id="studentInfo">Loading data...</pre>
+</body>
+
 </html>
