@@ -66,7 +66,7 @@ app.http('getStudentInfo', {
                 WHERE 
                     studentgroups.StudentID = ?
             `;
-            let [courses] = await new Promise((resolve, reject) => {
+            let courses = await new Promise((resolve, reject) => {
                 db.query(query, [studentId], function (error, results) {
                     if (error) return reject(error);
                     resolve(results);
@@ -84,26 +84,27 @@ app.http('getStudentInfo', {
 
                 // Get incomplete peer evaluations for this course for the student
                 let peerReviewQuery = `
-                SELECT 
-                    s.*,
-                    p.*,
-                    CONCAT(st.FirstName, ' ', st.LastName) AS ReceiverName
+                SELECT DISTINCT
+                    CONCAT(st.FirstName, ' ', st.LastName) AS ReceiverName,
+                    s.CourseID,
+                    s.DueDate,
+                    p.*
                 FROM 
                     peerevaluations p
-                LEFT JOIN 
-                    schedule s ON p.ScheduleID = p.ScheduleID AND p.WriterStudentID = ?
-                LEFT JOIN
+                JOIN 
+                    schedule s ON p.ScheduleID = p.ScheduleID AND p.WriterStudentID = 1
+                JOIN
                     student st ON p.ReceiverStudentID = st.StudentID
                 WHERE 
-                    s.CourseID = ?
+                    s.CourseID = 3
                 `;
-                let [peerReviews] = await new Promise((resolve, reject) => {
+                let peerReviews = await new Promise((resolve, reject) => {
                     db.query(peerReviewQuery, [studentId, courseInfo.courseId], function (error, results) {
                         if (error) return reject(error);
                         resolve(results);
                     });
                 });
-
+                peerReviews = Array.isArray(peerReviews) ? peerReviews : [peerReviews];
                 courseInfo.peerReviews = peerReviews; // add peer reviews to the course info
                 return courseInfo;
             }));
