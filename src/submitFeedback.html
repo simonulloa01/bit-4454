@@ -154,9 +154,11 @@
                 success: function (response) {
                     console.log("Data submitted successfully:", response);
                     // send the user to /StudentHome.html?session_id=...
-                    window.location.href = "/StudentHome.html?session_id=" + session_id;
+                    $('body').prepend('<div class="alert alert-success" role="alert">Data submitted successfully!</div>');
+                    sleep(1000);
+                    window.location.href = "/StudentHome.html?session=" + session_id;
                 // display a banner stating that the data was submitted successfully
-                $('body').prepend('<div class="alert alert-success" role="alert">Data submitted successfully!</div>');
+               
                 },
                 error: function (error) {
                     console.error("An error occurred during submission: ", error);
