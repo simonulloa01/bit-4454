@@ -154,9 +154,9 @@
                 success: function (response) {
                     console.log("Data submitted successfully:", response);
                     // send the user to /StudentHome.html?session_id=...
-                    $('body').prepend('<div class="alert alert-success" role="alert">Data submitted successfully!</div>');
-                    sleep(1000);
                     window.location.href = "/StudentHome.html?session=" + session_id;
+                    $('body').prepend('<div class="alert alert-success" role="alert">Data submitted successfully!</div>');
+
                 // display a banner stating that the data was submitted successfully
                
                 },
