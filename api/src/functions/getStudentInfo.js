@@ -86,17 +86,16 @@ app.http('getStudentInfo', {
                 let peerReviewQuery = `
                 SELECT 
                     s.*,
-                    p.ReceiverStudentID,
+                    p.*,
                     CONCAT(st.FirstName, ' ', st.LastName) AS ReceiverName
                 FROM 
-                    schedule s
+                    peerevaluations p
                 LEFT JOIN 
-                    peerevaluations p ON s.ScheduleID = p.ScheduleID AND p.WriterStudentID = ?
+                    schedule s ON p.ScheduleID = p.ScheduleID AND p.WriterStudentID = ?
                 LEFT JOIN
                     student st ON p.ReceiverStudentID = st.StudentID
                 WHERE 
-                    s.CourseID = ? AND 
-                    p.CompletionDate IS NULL;
+                    s.CourseID = ?
                 `;
                 let [peerReviews] = await new Promise((resolve, reject) => {
                     db.query(peerReviewQuery, [studentId, courseInfo.courseId], function (error, results) {
