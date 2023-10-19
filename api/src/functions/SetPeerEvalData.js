@@ -15,6 +15,15 @@ app.http('SetPeerEvalData', {
         const session_id = body.session_id;
         // Extract other relevant information from the request body here
 
+        // Check if any of the values are null
+        const allValuesProvided = [
+            body.DisciplinaryKnowledge,
+            body.IntellectualSkills,
+            body.InterpersonalSkills,
+            body.GlobalCitizenship,
+            body.PersonalMastery
+        ].every(item => item != null);
+
         // Setup your SQL connection
         const db = mysql.createConnection({
             host: 'bitsem.mysql.database.azure.com',
@@ -28,34 +37,66 @@ app.http('SetPeerEvalData', {
         db.connect();
 
         try {
-            // Construct the SQL query for the update operation
-            let query = `
-               UPDATE peerevaluations SET 
-               WriterStudentID = ?, 
-               ScheduleID = ?, 
-               ReceiverStudentID = ?, 
-               DisciplinaryKnowledge = ?, 
-               IntellectualSkills = ?, 
-               InterpersonalSkills = ?, 
-               GlobalCitizenship = ?, 
-               PersonalMastery = ? 
-               WHERE EvaluationID = ?
-           `;
+            // Prepare the SQL query and data
+            let query;
+            let queryData;
 
-            // Setup the data for the query
-            let queryData = [
-                body.WriterStudentID,
-                body.ScheduleID,
-                body.ReceiverStudentID,
-                body.DisciplinaryKnowledge,
-                body.IntellectualSkills,
-                body.InterpersonalSkills,
-                body.GlobalCitizenship,
-                body.PersonalMastery,
-                body.EvaluationID
-            ];
+            if (allValuesProvided) {
+                // All values are provided, set CompletionDate to today
+                query = `
+            UPDATE peerevaluations SET 
+            WriterStudentID = ?, 
+            ScheduleID = ?, 
+            ReceiverStudentID = ?, 
+            DisciplinaryKnowledge = ?, 
+            IntellectualSkills = ?, 
+            InterpersonalSkills = ?, 
+            GlobalCitizenship = ?, 
+            PersonalMastery = ?, 
+            CompletionDate = CURDATE() 
+            WHERE EvaluationID = ?
+        `;
 
-            // Execute the query
+                queryData = [
+                    body.WriterStudentID,
+                    body.ScheduleID,
+                    body.ReceiverStudentID,
+                    body.DisciplinaryKnowledge,
+                    body.IntellectualSkills,
+                    body.InterpersonalSkills,
+                    body.GlobalCitizenship,
+                    body.PersonalMastery,
+                    body.EvaluationID
+                ];
+            } else {
+                // Not all values are provided, don't set CompletionDate
+                query = `
+            UPDATE peerevaluations SET 
+            WriterStudentID = ?, 
+            ScheduleID = ?, 
+            ReceiverStudentID = ?, 
+            DisciplinaryKnowledge = ?, 
+            IntellectualSkills = ?, 
+            InterpersonalSkills = ?, 
+            GlobalCitizenship = ?, 
+            PersonalMastery = ? 
+            WHERE EvaluationID = ?
+        `;
+
+                queryData = [
+                    body.WriterStudentID,
+                    body.ScheduleID,
+                    body.ReceiverStudentID,
+                    body.DisciplinaryKnowledge,
+                    body.IntellectualSkills,
+                    body.InterpersonalSkills,
+                    body.GlobalCitizenship,
+                    body.PersonalMastery,
+                    body.EvaluationID
+                ];
+            }
+
+            // Execute the SQL query
             await new Promise((resolve, reject) => {
                 db.query(query, queryData, function (error, results) {
                     if (error) return reject(error);
@@ -77,5 +118,4 @@ app.http('SetPeerEvalData', {
             };
         }
     }
-
 });
