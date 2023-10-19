@@ -153,7 +153,10 @@
                 contentType: "application/json",
                 success: function (response) {
                     console.log("Data submitted successfully:", response);
-                    // Here, you might want to show a success message or redirect
+                    // send the user to /StudentHome.html?session_id=...
+                    window.location.href = "/StudentHome.html?session_id=" + session_id;
+                // display a banner stating that the data was submitted successfully
+                $('body').prepend('<div class="alert alert-success" role="alert">Data submitted successfully!</div>');
                 },
                 error: function (error) {
                     console.error("An error occurred during submission: ", error);
