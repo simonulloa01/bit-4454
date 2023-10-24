@@ -1,8 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SMU Student Peer Evaluation System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* SMU colors */
+        :root {
+            --smu-red: #C8102E; /* SMU Red */
+            --smu-blue: #0033A0; /* SMU Blue */
+        }
+
+        body {
+            background-color: white; /* Adjust background color if necessary */
+            color: var(--smu-blue);
+        }
+
+        .navbar, .btn-primary {
+            background-color: var(--smu-red);
+            color: white;
+        }
+
+        .navbar-brand {
+            padding: 0;
+        }
+
+        .navbar-brand img {
+            height: 3rem; /* Adjust size as needed */
+        }
+
+        h1, h2, h3, h4, h5 {
+            color: var(--smu-red);
+        }
+    </style>
     <script>
         // Function to parse query string
         function getParameterByName(name, url = window.location.href) {
@@ -23,7 +57,7 @@
             }
 
             try {
-                const response = await fetch('api/getStudentInfo', {
+                const response = await fetch('/api/getStudentInfo', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -35,11 +69,31 @@
                     throw new Error('Network response was not ok');
                 }
 
-                // Parse the JSON from the response
                 const data = await response.json();
 
-                // Use the data from the response
-                document.getElementById('studentInfo').innerHTML = JSON.stringify(data, null, 2);
+                // Constructing HTML content
+                let contentHTML = `<h2 class="mb-3">Student Name: ${data.studentName}</h2>`;
+
+                data.courses.forEach(course => {
+                    contentHTML += `
+                    <div class="mb-4">
+                        <h3>Course: ${course.courseId}, Professor: ${course.professorName}</h3>
+                        <h4>Group: ${course.groupId}</h4>
+                        <h5>Peer Reviews:</h5>
+                        <ul>`;
+                    
+                    course.peerReviews.forEach(review => {
+                        contentHTML += `
+                            <li>
+                                Review for ${review.ReceiverName} (Due: ${new Date(review.DueDate).toLocaleDateString()}):
+                                <a href="${review.url}" target="_blank">Submit Feedback</a>
+                            </li>`;
+                    });
+
+                    contentHTML += `</ul></div>`;
+                });
+
+                document.getElementById('studentInfoContent').innerHTML = contentHTML;
             } catch (error) {
                 console.error('There was a problem with the fetch operation:', error);
             }
@@ -51,10 +105,23 @@
 </head>
 
 <body>
-    <h1>Welcome to the SMU Student Peer Evaluation System</h1>
-    <p>Use this system to evaluate your peers and receive evaluations from them.</p>
-    <!-- Container to display the data -->
-    <pre id="studentInfo">Loading data...</pre>
+    <!-- SMU-themed navigation bar -->
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="#">
+            <img src="https://www.smu.edu/-/media/Site/brand/2022/logo-guidelines/athletics/SMULogo_InformalPeruna_digitalonly_BR.png?h=242&w=300&hash=E2EEAE1026DA228E8E56E875934FCC76" alt="SMU logo">
+        </a>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Welcome to the SMU Student Peer Evaluation System</h1>
+        <p class="text-center mb-5">Use this system to evaluate your peers and receive evaluations from them.</p>
+        
+        <!-- Here we will display the student's information and peer reviews -->
+        <div id="studentInfoContent" class="mb-5">
+            <!-- Content will be filled by JavaScript -->
+            Loading data...
+        </div>
+    </div>
 </body>
 
 </html>
