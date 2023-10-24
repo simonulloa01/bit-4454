@@ -7,51 +7,104 @@
     <title>Team Member Evaluation</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        :root {
+            --smu-blue: #004289;
+            /* SMU Blue, replace with actual code */
+            --smu-red: #C8102E;
+            /* SMU Red, replace with actual code */
+        }
 
+        .btn-primary {
+            background-color: var(--smu-blue);
+            border-color: var(--smu-blue);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary:active {
+            background-color: var(--smu-red) !important;
+            border-color: var(--smu-red) !important;
+        }
+        .bg-primary {
+            background-color: var(--smu-red) !important;
+        }
+        .navbar,
+        .footer {
+            background-color: var(--smu-blue);
+        }
+
+        /* Add more custom styles here, like for fonts if SMU has specific ones */
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Your-SMU-Font', sans-serif;
+            /* replace 'Your-SMU-Font' with SMU's font if available */
+        }
+
+        /* If you have the SMU logo, you can style it here */
+        .smu-logo {
+            height: 60px;
+            /* Or appropriate size */
+        }
+    </style>
 </head>
 
-<body>
+<<body>
+    <!-- Main container -->
     <div class="container mt-5">
-        <h2 class="mb-4">Team Member Evaluation</h2>
-        <form>
+        <!-- Bootstrap card for the form -->
+        <div class="card shadow"> <!-- shadow for better visual hierarchy -->
+            <h2 class="card-header text-center text-white bg-primary">Team Member Evaluation</h2> <!-- Centered header with BG -->
+            <div class="card-body p-5"> 
+                <!-- Form starts here -->
+                <form id="evaluationForm">
+                    <!-- Each form group -->
+                    <div class="form-group mb-4"> <!-- Increased margin for better spacing -->
+                        <label for="name">Team Member</label>
+                        <input type="text" class="form-control" id="name" placeholder="John Doe">
+                    </div>
 
-            <div class="form-group">
-                <label for="name">Team Member</label>
-                <input type="text" class="form-control" id="name" placeholder="John Doe">
+                   
+                    <div class="form-group mb-4">
+                        <label for="knowledge">Disciplinary and multidisciplinary knowledge</label>
+                        <select class="form-control" id="knowledge"></select>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="skills">Intellectual and creative skills (Critical thinking and problem solving)</label>
+                        <select class="form-control" id="skills"></select>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="interpersonal">Interpersonal Skills (Collaboration, leadership, and communication)</label>
+                        <select class="form-control" id="interpersonal"></select>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="citizenship">Global citizenship (Intercultural understanding & sensitivity, ethics & social understanding)</label>
+                        <select class="form-control" id="citizenship"></select>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="mastery">Personal mastery (Self-directedness & meta-learning, resilience & positivity)</label>
+                        <select class="form-control" id="mastery"></select>
+                    </div>
+
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button> <!-- Full-width large button for easier click -->
+                </form>
             </div>
-
-            <div class="form-group">
-                <label for="knowledge">Disciplinary and multidisciplinary knowledge</label>
-                <select class="form-control" id="knowledge"></select>
-            </div>
-
-            <div class="form-group">
-                <label for="skills">Intellectual and creative skills (Critical thinking and problem solving)</label>
-                <select class="form-control" id="skills"></select>
-            </div>
-
-            <div class="form-group">
-                <label for="interpersonal">Interpersonal Skills (Collaboration, leadership, and communication)</label>
-                <select class="form-control" id="interpersonal"></select>
-            </div>
-
-            <div class="form-group">
-                <label for="citizenship">Global citizenship (Intercultural understanding & sensitivity, ethics & social
-                    understanding)</label>
-                <select class="form-control" id="citizenship"></select>
-            </div>
-
-            <div class="form-group">
-                <label for="mastery">Personal mastery (Self-directedness & meta-learning, resilience &
-                    positivity)</label>
-                <select class="form-control" id="mastery"></select>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+        </div>
     </div>
 
-</body>
+    <!-- JavaScript and jQuery should be loaded at the end of the body for improved page load performance -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5
+
 <script>
     $(document).ready(function () {
         // Define the options to be added
@@ -157,8 +210,8 @@
                     window.location.href = "/StudentHome.html?session=" + session_id;
                     $('body').prepend('<div class="alert alert-success" role="alert">Data submitted successfully!</div>');
 
-                // display a banner stating that the data was submitted successfully
-               
+                    // display a banner stating that the data was submitted successfully
+
                 },
                 error: function (error) {
                     console.error("An error occurred during submission: ", error);
