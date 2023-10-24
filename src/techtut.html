@@ -1,39 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CSV File Upload and Preview</title>
-    <link
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="container mt-5">
-      <h2 class="mb-3">Professor: John Doe</h2>
-      <div class="mb-4">
-        <input type="file" id="csvUpload" accept=".csv" />
-      </div>
-      <div class="mb-3">
-        <input
-          type="text"
-          id="searchInput"
-          class="form-control"
-          placeholder="Search..."
-        />
-      </div>
-      <table class="table table-striped" id="csvPreview">
-        <thead>
-          <tr>
-            <!-- Dynamically filled based on CSV -->
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Dynamically filled based on CSV -->
-        </tbody>
-      </table>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSV File Upload and Preview</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="container mt-5">
+    <h2 class="mb-3">Professor: John Doe</h2>
+    <div class="mb-4">
+      <input type="file" id="csvUpload" accept=".csv" />
     </div>
-    <!-- MySQL JavaScript client -->
-  </body>
+    <div class="mb-3">
+      <input type="text" id="searchInput" class="form-control" placeholder="Search..." />
+    </div>
+    <table class="table table-striped" id="csvPreview">
+      <thead>
+        <tr>
+          <!-- Dynamically filled based on CSV -->
+          <th scope="col">Team Member</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr scope="row">
+          <td>Team Member 1</td>
+        </tr>
+        <tr scope="row">
+          <td>Team Member 2</td>
+        </tr>
+        <tr scope="row">
+          <td>Team Member 3</td>
+        </tr>
+        <!-- Dynamically filled based on CSV -->
+      </tbody>
+    </table>
+  </div>
+  <!-- MySQL JavaScript client -->
+</body>
+
 </html>

@@ -1,74 +1,78 @@
 const { app } = require('@azure/functions');
-const mysql = require('mysql');
 
-app.http('upload-json', {
+app.http('upload-students', {
     methods: ['POST'],
     authLevel: 'anonymous',
     handler: async (request, context) => {
-        context.log('JSON Upload function processed a request.');
+        context.log('Process student upload.');
 
-        // Parse JSON body from the request
-        const payload = JSON.parse(await request.text());
-        const session_id = payload.session_id; // Professor's session_id for authentication
-        const section_id = payload.section_id; // Section ID for the specific course section
-        const students = payload.students; // Assuming the JSON contains an array of students
+        const body = JSON.parse(await request.text());
+        const session_id = body.session_id;
+        const section_id = body.section_id;
+        const students = body.students;
 
         // Setup your SQL connection
         const db = mysql.createConnection({
-            host: 'bitsem.mysql.database.azure.com',
-            user: 'clay',
-            password: 'Bit44542023',
-            database: 'main',
-            port: 3306,
-            ssl: true
+            // connection details
         });
 
         db.connect();
 
         try {
-            // First, validate the professor's session_id if necessary
-            // This step depends on your authentication logic and database schema
-            let authQuery = 'SELECT * FROM sessions WHERE session_id = ?'; // Adjust based on your schema
-            let session = await new Promise((resolve, reject) => {
-                db.query(authQuery, [session_id], (error, results) => {
+            // First, authenticate the session_id with the professor's session
+            let sessionQuery = 'SELECT professor_id FROM sessions WHERE session_id = ?';
+            let [session] = await new Promise((resolve, reject) => {
+                db.query(sessionQuery, [session_id], (error, results) => {
                     if (error) return reject(error);
-                    resolve(results[0]); // assuming the session is unique and only one record will be returned
+                    resolve(results);
                 });
             });
 
-            // Check if the session exists (i.e., the professor is authenticated)
-            if (!session) {
-                return {
-                    status: 401,
-                    body: 'Unauthorized: Invalid session ID'
-                };
+            if (!session || session.length === 0) {
+                throw new Error('Session authentication failed.');
             }
 
-            // If authenticated, proceed to process the student data
-            for (let student of students) {
-                // Add student to the 'student' table
-                let studentQuery = 'INSERT INTO student (LastName, FirstName, GroupId, Email) VALUES (?, ?, ?, ?)';
-                let studentInsertResult = await new Promise((resolve, reject) => {
-                    db.query(studentQuery, [student.LastName, student.FirstName, student.GroupId, student.Email], (error, results) => {
+            // For each student in the payload, insert or update the student in the 'student' table and insert the group data into 'studentgroups' table
+            await Promise.all(students.map(async (student) => {
+                let insertStudentQuery = `
+                    INSERT INTO student (FirstName, LastName, Email) 
+                    VALUES (?, ?, ?) 
+                    ON DUPLICATE KEY UPDATE 
+                    FirstName = VALUES(FirstName), 
+                    LastName = VALUES(LastName), 
+                    Email = VALUES(Email);
+                `;
+
+                // This assumes that your student table has an auto-increment primary key (StudentID)
+                let [result] = await new Promise((resolve, reject) => {
+                    db.query(insertStudentQuery, [student.FirstName, student.LastName, student.Email], (error, results) => {
                         if (error) return reject(error);
                         resolve(results);
                     });
                 });
 
-                // If necessary, use the result of the insert operation (like the inserted ID) for further queries
-                // For example, if you need to link the student with the section
-                let studentSectionQuery = 'INSERT INTO student_section (student_id, section_id) VALUES (?, ?)';
+                let studentId = result.insertId; // Get the ID of the inserted/updated student
+
+                let insertStudentGroupQuery = `
+                    INSERT INTO studentgroups (StudentID, CourseID, GroupID) 
+                    VALUES (?, ?, ?) 
+                    ON DUPLICATE KEY UPDATE 
+                    StudentID = VALUES(StudentID), 
+                    CourseID = VALUES(CourseID), 
+                    GroupID = VALUES(GroupID);
+                `;
+
                 await new Promise((resolve, reject) => {
-                    db.query(studentSectionQuery, [studentInsertResult.insertId, section_id], (error, results) => {
+                    db.query(insertStudentGroupQuery, [studentId, section_id, student.GroupId], (error, results) => {
                         if (error) return reject(error);
                         resolve(results);
                     });
                 });
-            }
+            }));
 
             return {
                 status: 200,
-                body: 'Data processed successfully!'
+                body: "Students and groups information updated successfully."
             };
         } catch (error) {
             context.log(error);
