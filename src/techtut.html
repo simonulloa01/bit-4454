@@ -1,34 +1,20 @@
-<!-- This is the opening declaration of an HTML document -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Meta tag specifying the character set for the document -->
     <meta charset="UTF-8" />
-
-    <!-- Meta tag specifying the viewport settings for responsive design -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- The title of the web page that will appear in the browser's title bar -->
     <title>CSV File Upload and Preview</title>
-
-    <!-- Link to Bootstrap CSS library for styling -->
     <link
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
   </head>
   <body>
-    <!-- A container element with some top margin -->
     <div class="container mt-5">
-      <!-- Heading displaying the professor's name -->
       <h2 class="mb-3">Professor: John Doe</h2>
-
-      <!-- Upload Button for CSV file -->
       <div class="mb-4">
         <input type="file" id="csvUpload" accept=".csv" />
       </div>
-
-      <!-- Search Bar for searching within the CSV data -->
       <div class="mb-3">
         <input
           type="text"
@@ -37,131 +23,17 @@
           placeholder="Search..."
         />
       </div>
-
-      <!-- Table for previewing CSV data with Bootstrap styling -->
       <table class="table table-striped" id="csvPreview">
         <thead>
           <tr>
-            <!-- Table headers will be populated dynamically -->
+            <!-- Dynamically filled based on CSV -->
           </tr>
         </thead>
         <tbody>
-          <!-- Table data rows will be populated dynamically -->
+          <!-- Dynamically filled based on CSV -->
         </tbody>
       </table>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mysql/xdevapi"></script>
-    <!-- Include the MySQL JavaScript client -->
-    <script>
-      $(document).ready(function () {
-        // Function to load and read CSV file
-        $("#csvFileInput").on("change", function (e) {
-          let file = e.target.files[0];
-          if (file) {
-            let reader = new FileReader();
-            reader.onload = function (evt) {
-              let contents = evt.target.result;
-              let lines = contents.split("\n");
-              let tableContent = "";
-
-              // Create table headers
-              let headers = lines[0].split(",");
-              let headerRow = "<tr>";
-              headers.forEach((header) => {
-                headerRow += "<th>" + header.trim() + "</th>";
-              });
-              headerRow += "</tr>";
-              $("#csvTable thead").html(headerRow);
-
-              // Create table body
-              for (let i = 1; i < lines.length; i++) {
-                // Skip headers line
-                if (!lines[i]) continue; // Skip empty lines
-                let row = "<tr>";
-                let cells = lines[i].split(",");
-                cells.forEach((cell) => {
-                  row += `<td contenteditable='true'>` + cell.trim() + "</td>"; // Make cell editable
-                });
-                row += "</tr>";
-                tableContent += row;
-              }
-              $("#csvTable tbody").html(tableContent);
-            };
-            reader.readAsText(file);
-          }
-        });
-
-        // Function to search within the table
-        $("#searchInput").on("keyup", function () {
-          let value = $(this).val().toLowerCase();
-          $("#csvTable tbody tr").filter(function () {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-          });
-        });
-
-        // Function to handle cell data update
-        $("#csvTable").on("blur", "td[contenteditable]", function () {
-          // Get cell info
-          const newValue = $(this).text();
-          const rowIndex = $(this).parent().index() + 1; // +1 to account for header row
-          const columnName = $("#csvTable th").eq($(this).index()).text();
-          const rowId = $("#csvTable tr").eq(rowIndex).find("td").eq(0).text();
-
-          // For demonstration, we're logging the changed information
-          console.log(
-            "Updated cell value:",
-            newValue,
-            "Row ID:",
-            rowId,
-            "Column Name:",
-            columnName
-          );
-
-          // Setup database connection - this is unsafe and should never be used in production
-          const dbConfig = {
-            host: "bitsem.mysql.database.azure.com",
-            user: "clay@bitsem",
-            password: "Bit44542023",
-            database: "techtut",
-            port: 3306,
-          };
-
-          // Function to execute SQL query
-          const executeQuery = async (query) => {
-            try {
-              const mysqlx = require("@mysql/xdevapi");
-              const session = await mysqlx.getSession(dbConfig);
-              const result = await session.sql(query).execute();
-              session.close();
-              return result;
-            } catch (error) {
-              console.error("Could not execute query:", error);
-              return null;
-            }
-          };
-
-          // Update data in the database
-          const sqlQuery = `
-            UPDATE student
-            SET ${columnName} = '${newValue}'
-            WHERE StudentID = ${rowId}
-          `;
-
-          executeQuery(sqlQuery).then((result) => {
-            if (result) {
-              console.log(
-                "Database update result:",
-                result.getAffectedItemsCount()
-              );
-            }
-          });
-        });
-      });
-    </script>
-
-    <!-- PapaParse for parsing CSV data -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <!-- MySQL JavaScript client -->
   </body>
 </html>
