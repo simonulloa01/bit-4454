@@ -55,7 +55,7 @@ app.http('upload-students', {
 
                 let insertStudentGroupQuery = `
                     INSERT INTO studentgroups (StudentID, CourseID, GroupID) 
-                    VALUES (?, ?, ?) 
+                    VALUES (?, ?, ?)  
                     ON DUPLICATE KEY UPDATE 
                     StudentID = VALUES(StudentID), 
                     CourseID = VALUES(CourseID), 
