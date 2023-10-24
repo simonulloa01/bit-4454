@@ -51,63 +51,116 @@
       </table>
     </div>
 
-    <!-- Optional: Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mysql/xdevapi"></script>
+    <!-- Include the MySQL JavaScript client -->
     <script>
-      // Function to handle CSV upload
-      document
-        .getElementById("csvUpload")
-        .addEventListener("change", function (event) {
-          let file = event.target.files[0];
-          let reader = new FileReader();
-          reader.onload = function (event) {
-            let csvData = event.target.result;
-            let parsedData = Papa.parse(csvData, { header: true }); // Use PapaParse to parse CSV data
-            populateTable(parsedData);
+      $(document).ready(function () {
+        // Function to load and read CSV file
+        $("#csvFileInput").on("change", function (e) {
+          let file = e.target.files[0];
+          if (file) {
+            let reader = new FileReader();
+            reader.onload = function (evt) {
+              let contents = evt.target.result;
+              let lines = contents.split("\n");
+              let tableContent = "";
+
+              // Create table headers
+              let headers = lines[0].split(",");
+              let headerRow = "<tr>";
+              headers.forEach((header) => {
+                headerRow += "<th>" + header.trim() + "</th>";
+              });
+              headerRow += "</tr>";
+              $("#csvTable thead").html(headerRow);
+
+              // Create table body
+              for (let i = 1; i < lines.length; i++) {
+                // Skip headers line
+                if (!lines[i]) continue; // Skip empty lines
+                let row = "<tr>";
+                let cells = lines[i].split(",");
+                cells.forEach((cell) => {
+                  row += `<td contenteditable='true'>` + cell.trim() + "</td>"; // Make cell editable
+                });
+                row += "</tr>";
+                tableContent += row;
+              }
+              $("#csvTable tbody").html(tableContent);
+            };
+            reader.readAsText(file);
+          }
+        });
+
+        // Function to search within the table
+        $("#searchInput").on("keyup", function () {
+          let value = $(this).val().toLowerCase();
+          $("#csvTable tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+          });
+        });
+
+        // Function to handle cell data update
+        $("#csvTable").on("blur", "td[contenteditable]", function () {
+          // Get cell info
+          const newValue = $(this).text();
+          const rowIndex = $(this).parent().index() + 1; // +1 to account for header row
+          const columnName = $("#csvTable th").eq($(this).index()).text();
+          const rowId = $("#csvTable tr").eq(rowIndex).find("td").eq(0).text();
+
+          // For demonstration, we're logging the changed information
+          console.log(
+            "Updated cell value:",
+            newValue,
+            "Row ID:",
+            rowId,
+            "Column Name:",
+            columnName
+          );
+
+          // Setup database connection - this is unsafe and should never be used in production
+          const dbConfig = {
+            host: "bitsem.mysql.database.azure.com",
+            user: "clay@bitsem",
+            password: "Bit44542023",
+            database: "techtut",
+            port: 3306,
           };
-          reader.readAsText(file);
-        });
 
-      // Function to populate the table
-      function populateTable(data) {
-        let thead = document.querySelector("#csvPreview thead tr");
-        let tbody = document.querySelector("#csvPreview tbody");
+          // Function to execute SQL query
+          const executeQuery = async (query) => {
+            try {
+              const mysqlx = require("@mysql/xdevapi");
+              const session = await mysqlx.getSession(dbConfig);
+              const result = await session.sql(query).execute();
+              session.close();
+              return result;
+            } catch (error) {
+              console.error("Could not execute query:", error);
+              return null;
+            }
+          };
 
-        // Clear current data
-        thead.innerHTML = "";
-        tbody.innerHTML = "";
+          // Update data in the database
+          const sqlQuery = `
+            UPDATE student
+            SET ${columnName} = '${newValue}'
+            WHERE StudentID = ${rowId}
+          `;
 
-        // Set headers
-        data.meta.fields.forEach((field) => {
-          let th = document.createElement("th");
-          th.textContent = field;
-          thead.appendChild(th);
-        });
-
-        // Set rows
-        data.data.forEach((row) => {
-          let tr = document.createElement("tr");
-          data.meta.fields.forEach((field) => {
-            let td = document.createElement("td");
-            td.textContent = row[field];
-            tr.appendChild(td);
-          });
-          tbody.appendChild(tr);
-        });
-      }
-
-      // Add search functionality
-      document
-        .getElementById("searchInput")
-        .addEventListener("keyup", function () {
-          let searchValue = this.value.toLowerCase();
-          document.querySelectorAll("#csvPreview tbody tr").forEach((row) => {
-            let text = row.textContent.toLowerCase();
-            row.style.display = text.includes(searchValue) ? "" : "none";
+          executeQuery(sqlQuery).then((result) => {
+            if (result) {
+              console.log(
+                "Database update result:",
+                result.getAffectedItemsCount()
+              );
+            }
           });
         });
+      });
     </script>
+
     <!-- PapaParse for parsing CSV data -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
   </body>
