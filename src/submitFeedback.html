@@ -9,9 +9,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
         :root {
-            --smu-blue: #004289;
+            --smu-blue: #141B4D;
             /* SMU Blue, replace with actual code */
-            --smu-red: #C8102E;
+            --smu-red: #8A704C;
             /* SMU Red, replace with actual code */
         }
 
@@ -59,20 +59,19 @@
 <body>
     <!-- Main container -->
     <div class="container mt-5">
-        <!-- Bootstrap card for the form -->
-        <div class="card shadow"> <!-- shadow for better visual hierarchy -->
+        <!-- Card for the form -->
+        <div class="card shadow">
             <h2 class="card-header text-center text-white bg-primary">Team Member Evaluation</h2>
-            <!-- Centered header with BG -->
-            <div class="card-body p-5">
+            <div class="card-body">
                 <!-- Form starts here -->
                 <form id="evaluationForm">
                     <!-- Each form group -->
-                    <div class="form-group mb-4"> <!-- Increased margin for better spacing -->
+                    <div class="form-group mb-4">
                         <label for="name">Team Member</label>
                         <input type="text" class="form-control" id="name" placeholder="John Doe">
                     </div>
 
-
+                    <!-- Repeated for each field... -->
                     <div class="form-group mb-4">
                         <label for="knowledge">Disciplinary and multidisciplinary knowledge</label>
                         <select class="form-control" id="knowledge"></select>
@@ -103,15 +102,13 @@
                     </div>
 
                     <!-- Submit button -->
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
-                    <!-- Full-width large button for easier click -->
+                    <button class="btn btn-primary btn-lg btn-block" type="submit">Submit</button>
                 </form>
             </div>
         </div>
     </div>
-
-    <!-- JavaScript and jQuery should be loaded at the end of the body for improved page load performance -->
 </body>
+
 
 <script>
     $(document).ready(function () {

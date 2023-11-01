@@ -1,44 +1,114 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CSV File Upload and Preview</title>
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
-</head>
-
 <body>
+  <!-- Main container -->
   <div class="container mt-5">
-    <h2 class="mb-3">Professor: John Doe</h2>
-    <div class="mb-4">
-      <input type="file" id="csvUpload" accept=".csv" />
-    </div>
-    <div class="mb-3">
-      <input type="text" id="searchInput" class="form-control" placeholder="Search..." />
-    </div>
-    <table class="table table-striped" id="csvPreview">
-      <thead>
-        <tr>
-          <!-- Dynamically filled based on CSV -->
-          <th scope="col">Team Member</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr scope="row">
-          <td>Team Member 1</td>
-        </tr>
-        <tr scope="row">
-          <td>Team Member 2</td>
-        </tr>
-        <tr scope="row">
-          <td>Team Member 3</td>
-        </tr>
-        <!-- Dynamically filled based on CSV -->
-      </tbody>
-    </table>
-  </div>
-  <!-- MySQL JavaScript client -->
-</body>
+    <!-- Bootstrap card for the form -->
+    <div class="card shadow"> <!-- shadow for better visual hierarchy -->
+      <h2 class="card-header text-center text-white bg-primary">Team Member Evaluation</h2>
+      <!-- Centered header with BG -->
+      <div class="card-body p-5"> <!-- Increased padding for better spacing -->
+        <!-- Form starts here -->
+        <form id="evaluationForm">
+          <!-- Each form group -->
+          <div class="form-group mb-4"> <!-- Increased margin for better spacing -->
+            <label for="name">Team Member</label>
+            <input type="text" class="form-control" id="name" placeholder="John Doe">
+          </div>
 
-</html>
+          <!-- Repeated for each field... -->
+          <div class="form-group mb-4">
+            <label for="knowledge">Disciplinary and multidisciplinary knowledge</label>
+            <select class="form-control" id="knowledge"></select>
+          </div>
+
+          <div class="form-group mb-4">
+            <label for="skills">Intellectual and creative skills (Critical thinking and problem solving)</label>
+            <select class="form-control" id="skills"></select>
+          </div>
+
+          <div class="form-group mb-4">
+            <label for="interpersonal">Interpersonal Skills (Collaboration, leadership, and communication)</label>
+            <select class="form-control" id="interpersonal"></select>
+          </div>
+
+          <div class="form-group mb-4">
+            <label for="citizenship">Global citizenship (Intercultural understanding & sensitivity, ethics & social
+              understanding)</label>
+            <select class="form-control" id="citizenship"></select>
+          </div>
+
+          <div class="form-group mb-4">
+            <label for="mastery">Personal mastery (Self-directedness & meta-learning, resilience & positivity)</label>
+            <select class="form-control" id="mastery"></select>
+          </div>
+
+          <!-- Submit button -->
+          <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+          <!-- Full-width large button for easier click -->
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <main>
+    <img
+      src="https://www.smu.edu/-/media/Site/brand/2022/logo-guidelines/athletics/SMULogo_InformalPeruna_digitalonly_BR.png?h=242&w=300&hash=E2EEAE1026DA228E8E56E875934FCC76"
+      alt="SMU logo"
+      class="smu-logo"
+      width="150"
+    />
+    <h1 class="text-center">SMU Peer Evaluation Tool</h1>
+    <div class="container">
+      <!-- Login Form Start -->
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-4">
+          <form id="loginForm">
+            <div class="form-group">
+              <label for="email">Email address:</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                aria-describedby="emailHelp"
+                required
+              />
+              <small id="emailHelp" class="form-text text-muted"
+                >We'll never share your email with anyone else.</small
+              >
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+      <!-- Login Form End -->
+      <p id="test"></p>
+    </div>
+  </main>
+1. **Mobile-First**: 
+- **Meaning**: The framework is designed with mobile devices as the primary target. It ensures that websites or web applications are optimized for mobile view and can adjust smoothly to larger screens.
+- **Competitors**: All frameworks (Bootstrap, Foundation, Semantic UI, Bulma, Tailwind CSS, Materialize, UIKit) support the mobile-first approach.
+
+2. **Customizability**:
+- **Meaning**: Refers to how easily developers can modify the default styles and functionalities to fit their design or functionality requirements.
+- **Competitors**: While most frameworks offer a good level of customizability, Tailwind CSS stands out with "Very High" customizability, allowing developers to build almost any design without leaving their HTML.
+
+3. **Default Components**:
+- **Meaning**: These are pre-styled and pre-scripted components available out-of-the-box, such as buttons, forms, and modals.
+- **Competitors**: Bootstrap, Foundation, Semantic UI, Materialize, and UIKit offer many default components. Bulma has fewer, and Tailwind CSS essentially offers none, focusing instead on utility classes.
+
+4. **JavaScript Dependency**:
+- **Meaning**: Whether the framework relies on JavaScript for some of its features or functionalities.
+- **Competitors**: Bootstrap, Foundation, Semantic UI, Materialize, and UIKit depend on JavaScript, whereas Bulma and Tailwind CSS do not.
+
+5. **Utility Classes**:
+- **Meaning**: These are classes that serve specific CSS purposes, allowing developers to style elements without writing custom CSS.
+- **Competitors**: Tailwind CSS stands out with its extensive utility-first approach, enabling rapid prototype and development without touching a stylesheet.
+
+6. **Learning Curve**:
+- **Meaning**: Indicates how easy or difficult it is for a new user to get acquainted with and become proficient in using the framework.
+- **Competitors**: Bulma is known for its ease of learning. Both Foundation and UIKit have a steeper learning curve, while others like Bootstrap, Semantic UI, Materialize, and Tailwind CSS have a moderate curve.
+
+7. **Community/Documentation**:
+- **Meaning**: Refers to the size and activeness of the framework's user community and the quality/comprehensiveness of the official documentation.
+- **Competitors**: Bootstrap boasts a "Very Large" community, which is a testament to its widespread adoption and extensive documentation. Tailwind CSS's community is noted as "Growing," which reflects its increasing popularity.
+
+Each framework has its strengths and is suited for different scenarios. The best choice often depends on the specific requirements of the project and the familiarity or preference of the developer or development team.
