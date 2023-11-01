@@ -80,7 +80,7 @@ app.http('post-auth', {
             // Construct the payload for the external service
             const payload = {
                 email: email,
-                link: `https://zealous-plant-073f3f80f.4.azurestaticapps.net/${StudentID != undefined ? "StudentHome" : "techtut"}?session=${sessionId}`,
+                link: `https://zealous-plant-073f3f80f.4.azurestaticapps.net/${StudentID != undefined ? "StudentHome" : "ProfessorHome"}?session=${sessionId}`,
                 name: firstName
             };
 
