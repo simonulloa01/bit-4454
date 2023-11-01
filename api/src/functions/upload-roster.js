@@ -1,5 +1,5 @@
 const { app } = require('@azure/functions');
-
+const mysql = require('mysql');
 app.http('upload-students', {
     methods: ['POST'],
     authLevel: 'anonymous',
@@ -13,7 +13,12 @@ app.http('upload-students', {
 
         // Setup your SQL connection
         const db = mysql.createConnection({
-            // connection details
+            host: 'bitsem.mysql.database.azure.com',
+            user: 'clay',
+            password: 'Bit44542023',
+            database: 'main',
+            port: 3306,
+            ssl: true
         });
 
         db.connect();
@@ -40,7 +45,8 @@ app.http('upload-students', {
                     ON DUPLICATE KEY UPDATE 
                     FirstName = VALUES(FirstName), 
                     LastName = VALUES(LastName), 
-                    Email = VALUES(Email);
+                    Email = VALUES(Email)
+
                 `;
 
                 // This assumes that your student table has an auto-increment primary key (StudentID)
@@ -51,8 +57,15 @@ app.http('upload-students', {
                     });
                 });
 
-                let studentId = result.insertId; // Get the ID of the inserted/updated student
-
+                let studentIdQuery = 'SELECT StudentID FROM student WHERE Email = ?';
+                let [studentIdResult] = await new Promise((resolve, reject) => {
+                    db.query(studentIdQuery, [student.Email], (error, results) => {
+                        if (error) return reject(error);
+                        resolve(results);
+                    });
+                });
+                let studentId = studentIdResult.StudentID;
+                
                 let insertStudentGroupQuery = `
                     INSERT INTO studentgroups (StudentID, CourseID, GroupID) 
                     VALUES (?, ?, ?)  
