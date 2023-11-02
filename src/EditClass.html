@@ -5,127 +5,122 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Upload</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        crossorigin="anonymous">
+    <title>Edit Class</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Papaparse for CSV Parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
 
 <body>
-    <div class="container mt-5">
-        <h1>Student Upload</h1>
+    <div class="container mt-4">
+        <h1>Edit Class</h1>
 
-        <div class="mb-3">
-            <input type="file" id="fileInput" class="form-control" accept=".csv">
+        <!-- CSV File Upload -->
+        <div class="form-group">
+            <label for="csv-file-input">Upload CSV:</label>
+            <input type="file" class="form-control-file" id="csv-file-input" accept=".csv">
         </div>
 
-        <table class="table table-bordered" id="previewTable">
+        <!-- Table to Preview and Edit Data -->
+        <table class="table table-bordered" id="preview-table">
             <thead>
-                <tr></tr>
+                <!-- Headers will be inserted here -->
             </thead>
-            <tbody></tbody>
+            <tbody>
+                <!-- Data rows will be inserted here -->
+            </tbody>
         </table>
 
-        <button class="btn btn-primary" id="submitBtn">Submit</button>
+        <!-- Submit Button -->
+        <button class="btn btn-primary" id="submit-btn">Submit</button>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
     <script>
-        const fileInput = document.getElementById('fileInput');
-        const previewTable = document.getElementById('previewTable');
-        const submitBtn = document.getElementById('submitBtn');
+        document.addEventListener('DOMContentLoaded', function () {
+            const params = new URLSearchParams(window.location.search);
+            const sessionId = params.get('session_id');
+            const courseId = params.get('course_id');
 
-        fileInput.addEventListener('change', handleFileUpload);
-        submitBtn.addEventListener('click', handleSubmit);
+            document.getElementById('csv-file-input').addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                if (!file) {
+                    alert('Please select a CSV file!');
+                    return;
+                }
 
-        let csvData = [];
-
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            Papa.parse(file, {
-                complete: function (results) {
-                    csvData = results.data;
-                    renderTable(csvData);
-                },
-                header: true
-            });
-        }
-
-        function renderTable(data) {
-            const thead = previewTable.querySelector('thead tr');
-            const tbody = previewTable.querySelector('tbody');
-
-            thead.innerHTML = '';
-            tbody.innerHTML = '';
-
-            if (data.length === 0) return;
-
-            // Create header
-            Object.keys(data[0]).forEach(key => {
-                const th = document.createElement('th');
-                th.innerText = key;
-                thead.appendChild(th);
-            });
-
-            // Create body
-            data.forEach((row, rowIndex) => {
-                const tr = document.createElement('tr');
-                Object.values(row).forEach((value, columnIndex) => {
-                    const td = document.createElement('td');
-                    td.innerText = value;
-                    td.contentEditable = true;
-                    td.addEventListener('blur', () => handleCellEdit(rowIndex, columnIndex, td.innerText));
-                    tr.appendChild(td);
+                Papa.parse(file, {
+                    complete: function (results) {
+                        generateTable(results.data);
+                    },
+                    header: true
                 });
-                tbody.appendChild(tr);
             });
-        }
 
-        function handleCellEdit(rowIndex, columnIndex, newValue) {
-            const key = Object.keys(csvData[0])[columnIndex];
-            csvData[rowIndex][key] = newValue;
-        }
+            document.getElementById('submit-btn').addEventListener('click', function () {
+                const table = document.getElementById('preview-table');
+                const data = Array.from(table.querySelectorAll('tbody tr')).map(row => {
+                    return Array.from(row.querySelectorAll('td')).map(cell => cell.textContent);
+                });
 
-        function getUrlParameter(name) {
-            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            const results = regex.exec(location.search);
-            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-        };
-
-        async function handleSubmit() {
-            // Replace 'your-azure-function-url' with your Azure Function URL
-            const url = 'http://localhost:7071/api/upload-students';
-
-            // Add session_id and section_id to the payload
-            const payload = {
-                session_id: getUrlParameter('session_id'), // replace with your session ID
-                section_id: getUrlParameter('course_id'), // replace with your section ID
-                students: csvData
-            };
-
-            try {
-                const response = await fetch(url, {
+                const payload = {
+                    session_id: sessionId,
+                    section_id: courseId,
+                    students: data.map(row => ({
+                        FirstName: row[0],
+                        LastName: row[1],
+                        Email: row[2],
+                        GroupId: row[3]
+                    }))
+                };
+                window.history.back();
+                // Example POST request to your backend API
+                fetch('/api/upload-students', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(payload)
-                });
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error('Error submitting data:', error));
+            });
+        });
 
-                const result = await response.text();
-                console.log(result);
-                alert('Data submitted successfully!');
-            } catch (error) {
-                1
-                console.error('Submission failed', error);
-                alert('Submission failed');
-            }
+        function generateTable(data) {
+            const table = document.getElementById('preview-table');
+            const thead = table.querySelector('thead');
+            const tbody = table.querySelector('tbody');
+
+            // Clear existing table content
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+
+            // Generate headers
+            const headerRow = thead.insertRow();
+            Object.keys(data[0]).forEach(key => {
+                const th = document.createElement('th');
+                th.textContent = key;
+                headerRow.appendChild(th);
+            });
+
+            // Generate rows
+            data.forEach(row => {
+                const tr = tbody.insertRow();
+                Object.values(row).forEach(value => {
+                    const td = tr.insertCell();
+                    td.textContent = value;
+                    td.setAttribute('contenteditable', 'true');
+                });
+            });
         }
     </script>
+
+    <!-- Bootstrap and Popper.js scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 
 </html>

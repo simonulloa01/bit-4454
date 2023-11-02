@@ -53,7 +53,7 @@
                     $('#courseTime').text(course.courseTime);
                     $('#year').text(course.year);
 
-                    const editClassUrl = `/editClass?session_id=${sessionId}&course_id=${course.courseId}`;
+                    const editClassUrl = `/EditClass?session_id=${sessionId}&course_id=${course.courseId}`;
                     $('#editClassBtn').attr('href', editClassUrl);
                 } else {
                     $('#professorName').text('No data found');
