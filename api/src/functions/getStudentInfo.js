@@ -93,11 +93,11 @@ app.http('getStudentInfo', {
                 FROM 
                     peerevaluations p
                 JOIN 
-                    schedule s ON p.ScheduleID = p.ScheduleID AND p.WriterStudentID = 1
+                    schedule s ON p.ScheduleID = p.ScheduleID AND p.WriterStudentID = ?
                 JOIN
                     student st ON p.ReceiverStudentID = st.StudentID
                 WHERE 
-                    s.CourseID = 3
+                    s.CourseID = ?
                 `;
                 let peerReviews = await new Promise((resolve, reject) => {
                     db.query(peerReviewQuery, [studentId, courseInfo.courseId], function (error, results) {
