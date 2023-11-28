@@ -93,7 +93,7 @@ app.http('getStudentInfo', {
                 FROM 
                     peerevaluations p
                 JOIN 
-                    schedule s ON p.ScheduleID = p.ScheduleID AND p.WriterStudentID = ?
+                    schedule s ON p.ScheduleID = s.ScheduleID AND p.WriterStudentID = ?
                 JOIN
                     student st ON p.ReceiverStudentID = st.StudentID
                 WHERE 
