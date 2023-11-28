@@ -145,7 +145,7 @@
                 Review for <strong>${review.ReceiverName}</strong>
                 <div class="text-muted">Due: <span class="badge bg-warning text-dark">${new Date(review.DueDate).toLocaleDateString()}</span></div>
               </div>
-              <a href="${review.url}" target="_blank" class="btn btn-sm btn-outline-primary">${buttonText}</a>
+              <a href="${review.url}" target="_blank" class="btn btn-sm btn-outline-primary ${review.CompletionDate == null ? "" : "bg-success"}">${buttonText}</a>
             </div>
           `;
           });
@@ -159,7 +159,7 @@
           if (isCompleted) {
             cardColorClass = 'bg-success'; // Change card color for completed reviews
             // Apply the color styling to the card
-            contentHTML = contentHTML.replace('bg-primary', cardColorClass);
+            //contentHTML = contentHTML.replace('bg-primary', cardColorClass);
           }
         });
         document.getElementById("studentInfoContent").innerHTML = contentHTML;
