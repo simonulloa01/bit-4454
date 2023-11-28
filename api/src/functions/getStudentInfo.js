@@ -77,7 +77,8 @@ app.http('getStudentInfo', {
                 const courseInfo = {
                     courseId: course.CourseID,
                     professorName: course.ProfessorName,
-                    groupId: course.GroupID
+                    groupId: course.GroupID,
+                    courseName: course.CourseName
                     
                     // other course related info
                 };
