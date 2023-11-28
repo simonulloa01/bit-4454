@@ -75,11 +75,24 @@
         const data = await response.json();
 
         // Constructing HTML content
-        let contentHTML = `<h2 class="mb-3 text-center">Hey ${data.studentName}!</h2>`;
+        let contentHTML = `<h2 class="mb-3 text-center">Hey ${data.studentName}!</h2><br>`;
 
         data.courses.forEach((course) => {
           let cardColorClass = 'bg-primary'; // Default card color class
 
+          // Start the card
+          contentHTML += `
+      <div class="row justify-content-center">
+        <div class="card mb-4 w-75">
+          <div class="card-header bg-primary text-white">
+            <strong>${course.courseName}</strong> <br/>
+            <small>Prof. ${course.professorName}</small>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Group: <span class="badge bg-secondary">${course.groupId}</span></h5>
+            <p class="card-text">Peer Reviews:</p>
+            <div class="list-group list-group-flush">
+      `;
           // ... [existing code for starting the card] ...
 
           course.peerReviews.forEach((review) => {
