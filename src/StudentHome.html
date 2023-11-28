@@ -10,35 +10,51 @@
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <style>
-    :root {
-      --smu-red: #8A704C;
-      --smu-blue: #141B4D;
-    }
+        :root {
+            --smu-blue: #141B4D;
+            /* SMU Blue, replace with actual code */
+            --smu-red: #8A704C;
+            /* SMU Red, replace with actual code */
+        }
 
-    body {
-      background-color: white;
-      color: var(--smu-blue);
-    }
+        .btn-primary {
+            background-color: var(--smu-blue);
+            border-color: var(--smu-blue);
+        }
 
-    .navbar-brand img {
-      height: 3rem;
-      /* Logo size */
-    }
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary:active {
+            background-color: var(--smu-red) !important;
+            border-color: var(--smu-red) !important;
+        }
 
-    .smu-header {
-      background-color: var(--smu-red);
-      color: white;
-    }
+        .bg-primary {
+            background-color: var(--smu-red) !important;
+        }
 
-    .smu-completed-review {
-      background-color: var(--smu-red);
-      color: white;
-    }
+        .navbar,
+        .footer {
+            background-color: var(--smu-blue);
+        }
 
-    .card-header {
-      background-color: var(--smu-blue);
-      color: white;
-    }
+        /* Add more custom styles here, like for fonts if SMU has specific ones */
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Your-SMU-Font', sans-serif;
+            /* replace 'Your-SMU-Font' with SMU's font if available */
+        }
+
+        /* If you have the SMU logo, you can style it here */
+        .smu-logo {
+            height: 60px;
+            /* Or appropriate size */
+        }
   </style>
   <script>
     // Function to parse query string
@@ -75,7 +91,7 @@
         const data = await response.json();
 
         // Constructing HTML content
-        let contentHTML = `<h2 class="mb-3 text-center">Hey ${data.studentName}!</h2><br>`;
+        document.getElementById("studentIntro").innerHTML = `<h2 class="mb-3 text-center">Hey ${data.studentName}!</h2><br>`;
 
         data.courses.forEach((course) => {
           let cardColorClass = 'bg-primary'; // Default card color class
@@ -146,10 +162,12 @@
         <h1 class="text-center">
           Welcome to the SMU Student Peer Evaluation System
         </h1>
+        <h2 id="studentIntro"></h2>
         <p class="text-center">
           Use this system to evaluate your peers and receive evaluations from
           them.
         </p>
+        
       </div>
     </div>
 
