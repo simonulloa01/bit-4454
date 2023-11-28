@@ -61,6 +61,7 @@ app.http('getProfessorInfo', {
                     body: 'Professor not found'
                 };
             }
+            //TODO Get amount of students
             rows = Array.isArray(rows) ? rows : [rows];
             const professor = {
                 professorInfo: {
