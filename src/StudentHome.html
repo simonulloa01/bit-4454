@@ -114,6 +114,7 @@
         contentHTML = `<div class="row justify-content-center">`;
         data.courses.forEach((course) => {
           let cardColorClass = 'bg-primary'; // Default card color class
+          let isCompleted = true;
 
           // Start the card
           contentHTML += `
@@ -129,7 +130,6 @@
       `;
           // ... [existing code for starting the card] ...
 
-          let isCompleted = true;
           course.peerReviews.forEach((review) => {
             if (review.CompletionDate != null) {
               // Change button text and card color if review is completed
@@ -156,11 +156,11 @@
             </div>
           </div>
           `;
-          if (isCompleted)
+          if (isCompleted) {
             cardColorClass = 'bg-success'; // Change card color for completed reviews
-
-          // Apply the color styling to the card
-          contentHTML = contentHTML.replace('bg-primary', cardColorClass);
+            // Apply the color styling to the card
+            contentHTML = contentHTML.replace('bg-primary', cardColorClass);
+          }
         });
         document.getElementById("studentInfoContent").innerHTML = contentHTML;
       } catch (error) {
