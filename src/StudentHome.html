@@ -143,9 +143,9 @@
             <div class="list-group-item d-flex justify-content-between align-items-center">
               <div>
                 Review for <strong>${review.ReceiverName}</strong>
-                <div class="text-muted">Due: <span class="badge bg-warning text-dark">${new Date(review.DueDate).toLocaleDateString()}</span></div>
+                <div class="text-muted">Due: <span class="badge  ${review.CompletionDate == null ? " bg-warning" : "bg-success"} text-dark">${new Date(review.DueDate).toLocaleDateString()}</span></div>
               </div>
-              <a href="${review.url}" target="_blank" class="btn btn-sm btn-outline-primary ${review.CompletionDate == null ? "" : "bg-success"}">${buttonText}</a>
+              <a href="${review.url}" target="_blank" class="btn btn-sm btn-outline-primary">${buttonText}</a>
             </div>
           `;
           });
