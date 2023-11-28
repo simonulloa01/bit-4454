@@ -130,13 +130,14 @@
       `;
           // ... [existing code for starting the card] ...
 
+          let isCompleted = true;
           course.peerReviews.forEach((review) => {
             if (review.CompletionDate != null) {
               // Change button text and card color if review is completed
               buttonText = 'Edit Peer Review';
-              cardColorClass = 'bg-success'; // Change card color for completed reviews
             } else {
               buttonText = 'Submit Feedback';
+              isCompleted = false;
             }
 
             contentHTML += `
@@ -160,7 +161,8 @@
           // Apply the color styling to the card
           contentHTML = contentHTML.replace('bg-primary', cardColorClass);
         });
-
+        if (isCompleted)
+          cardColorClass = 'bg-success'; // Change card color for completed reviews
         document.getElementById("studentInfoContent").innerHTML = contentHTML;
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
