@@ -156,13 +156,13 @@
               </div>
             </div>
           </div>
-`;
+          `;
+          if (isCompleted)
+            cardColorClass = 'bg-success'; // Change card color for completed reviews
 
           // Apply the color styling to the card
           contentHTML = contentHTML.replace('bg-primary', cardColorClass);
         });
-        if (isCompleted)
-          cardColorClass = 'bg-success'; // Change card color for completed reviews
         document.getElementById("studentInfoContent").innerHTML = contentHTML;
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
