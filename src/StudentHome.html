@@ -111,13 +111,12 @@
 
         // Constructing HTML content
         document.getElementById("studentIntro").innerHTML = `<h2 class="mb-3 text-center">Hey ${data.studentName}!</h2>`;
-        contentHTML = "";
+        contentHTML = `<div class="row justify-content-center">`;
         data.courses.forEach((course) => {
           let cardColorClass = 'bg-primary'; // Default card color class
 
           // Start the card
           contentHTML += `
-      <div class="row justify-content-center">
         <div class="card mb-4 w-75">
           <div class="card-header bg-primary text-white">
             <strong>${course.courseName}</strong> <br/>
