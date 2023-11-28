@@ -1,169 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SMU Student Peer Evaluation System</title>
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --smu-red: #8A704C;
-        --smu-blue: #141B4D;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SMU Student Peer Evaluation System</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --smu-red: #8A704C;
+      --smu-blue: #141B4D;
+    }
+
+    body {
+      background-color: white;
+      color: var(--smu-blue);
+    }
+
+    .navbar-brand img {
+      height: 3rem;
+      /* Logo size */
+    }
+
+    .smu-header {
+      background-color: var(--smu-red);
+      color: white;
+    }
+
+    .card-header {
+      background-color: var(--smu-blue);
+      color: white;
+    }
+  </style>
+  <script>
+    // Function to parse query string
+    function getParameterByName(name, url = window.location.href) {
+      name = name.replace(/[\[\]]/g, "\\$&");
+      const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return "";
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    // Function to get student info
+    async function getStudentInfo() {
+      const sessionId = getParameterByName("session"); // Get session id from URL
+      if (!sessionId) {
+        console.error("Session ID not provided in the URL");
+        return;
       }
 
-      body {
-        background-color: white;
-        color: var(--smu-blue);
-      }
+      try {
+        const response = await fetch("/api/getStudentInfo", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ session_id: sessionId }), // send the session_id in the request body
+        });
 
-      .navbar-brand img {
-        height: 3rem; /* Logo size */
-      }
-
-      .smu-header {
-        background-color: var(--smu-red);
-        color: white;
-      }
-
-      .card-header {
-        background-color: var(--smu-blue);
-        color: white;
-      }
-    </style>
-    <script>
-      // Function to parse query string
-      function getParameterByName(name, url = window.location.href) {
-        name = name.replace(/[\[\]]/g, "\\$&");
-        const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-          results = regex.exec(url);
-        if (!results) return null;
-        if (!results[2]) return "";
-        return decodeURIComponent(results[2].replace(/\+/g, " "));
-      }
-
-      // Function to get student info
-      async function getStudentInfo() {
-        const sessionId = getParameterByName("session"); // Get session id from URL
-        if (!sessionId) {
-          console.error("Session ID not provided in the URL");
-          return;
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
         }
 
-        try {
-          const response = await fetch("/api/getStudentInfo", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ session_id: sessionId }), // send the session_id in the request body
-          });
+        const data = await response.json();
 
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
+        // Constructing HTML content
+        let contentHTML = `<h2 class="mb-3">Hey ${data.studentName}!</h2>`;
 
-          const data = await response.json();
+        data.courses.forEach((course) => {
+          // Start the card
+          contentHTML += `
+    <div class="card mb-3">
+      <div class="card-header">
+        Course: ${course.courseId} with Professor: ${course.professorName}
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Group: ${course.groupId}</h5>
+        <p class="card-text">Peer Reviews:</p>
+        <ul class="list-group list-group-flush">
+  `;
 
-          // Constructing HTML content
-          let contentHTML = `<h2 class="mb-3">Hey ${data.studentName}!</h2>`;
-
-          data.courses.forEach((course) => {
+          // Add list items for each review
+          course.peerReviews.forEach((review) => {
             contentHTML += `
-                    <div class="mb-4">
-                        <h3>Course: ${course.courseId} with Professor: ${course.professorName}</h3>
-                        <h4>Group: ${course.groupId}</h4>
-                        <h5>Peer Reviews:</h5>
-                        <ul>`;
-
-            course.peerReviews.forEach((review) => {
-              contentHTML += `
-                            <li>
-                                Review for ${
-                                  review.ReceiverName
-                                } (Due: ${new Date(
-                review.DueDate
-              ).toLocaleDateString()}):
-                                <a href="${
-                                  review.url
-                                }" target="_blank">Submit Feedback</a>
-                            </li>`;
-            });
-
-            contentHTML += `</ul></div>`;
+      <li class="list-group-item">
+        Review for ${review.ReceiverName} (Due: ${new Date(review.DueDate).toLocaleDateString()}):
+        <a href="${review.url}" target="_blank" class="btn btn-sm btn-primary">Submit Feedback</a>
+      </li>
+    `;
           });
 
-          document.getElementById("studentInfoContent").innerHTML = contentHTML;
-        } catch (error) {
-          console.error("There was a problem with the fetch operation:", error);
-        }
+          // Close the card
+          contentHTML += `
+        </ul>
+      </div>
+    </div>
+  `;
+        });
+
+        document.getElementById("studentInfoContent").innerHTML = contentHTML;
+      } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
       }
+    }
 
-      // Execute the function when the window loads
-      window.onload = getStudentInfo;
-    </script>
-  </head>
+    // Execute the function when the window loads
+    window.onload = getStudentInfo;
+  </script>
+</head>
 
-  <body>
-    <!-- SMU-themed navigation bar -->
-    <nav class="navbar navbar-expand-lg smu-header">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-          <img
-            src="https://www.smu.edu.sg/sites/default/files/smu-logo.jpg"
-            alt="SMU logo"
-          />
-        </a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Features</a>
-            </li>
-          </ul>
-        </div>
+<body>
+  <!-- SMU-themed navigation bar -->
+  <nav class="navbar navbar-expand-lg smu-header">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="https://www.smu.edu.sg/sites/default/files/smu-logo.jpg" alt="SMU logo" />
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Features</a>
+          </li>
+        </ul>
       </div>
-    </nav>
+    </div>
+  </nav>
 
-    <div class="container mt-5">
-      <!-- Main heading -->
-      <div class="row">
-        <div class="col-lg-12">
-          <h1 class="text-center">
-            Welcome to the SMU Student Peer Evaluation System
-          </h1>
-          <p class="text-center">
-            Use this system to evaluate your peers and receive evaluations from
-            them.
-          </p>
-        </div>
-      </div>
-
-      <div class="row">
-        <!-- This is where individual peer reviews will be placed using JavaScript -->
-        <div id="studentInfoContent" class="row"></div>
-        <!-- Consider using "row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" for card columns -->
+  <div class="container mt-5">
+    <!-- Main heading -->
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="text-center">
+          Welcome to the SMU Student Peer Evaluation System
+        </h1>
+        <p class="text-center">
+          Use this system to evaluate your peers and receive evaluations from
+          them.
+        </p>
       </div>
     </div>
 
-    <!-- Optional Bootstrap Bundle with Popper -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-  </body>
+    <div class="row">
+      <!-- This is where individual peer reviews will be placed using JavaScript -->
+      <div id="studentInfoContent" class="row"></div>
+      <!-- Consider using "row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" for card columns -->
+    </div>
+  </div>
+
+  <!-- Optional Bootstrap Bundle with Popper -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+
 </html>
