@@ -84,6 +84,51 @@
         color: white;
     }
 
+    .course-card {
+        border-left: 5px solid var(--smu-blue);
+        border-radius: 0.25rem;
+    }
+
+    .card-title {
+        color: var(--smu-blue);
+        margin-bottom: 1rem;
+    }
+
+    .course-info p,
+    .evaluation-info p {
+        font-size: 0.9rem;
+    }
+
+    .btn-smu {
+        background-color: var(--smu-blue);
+        border-color: var(--smu-blue);
+        color: white;
+    }
+
+    .btn-smu:hover {
+        background-color: var(--smu-red);
+        border-color: var(--smu-red);
+    }
+
+    /* Pie Chart Styles */
+    .pie-chart {
+        height: 4rem;
+        width: 4rem;
+        border-radius: 50%;
+        
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+    }
+
+    .pie-chart span {
+        font-size: 0.75rem;
+        color: white;
+        mix-blend-mode: difference;
+        /* Ensures text color contrasts with the background */
+    }
+
     .pie-chart-text {
         position: absolute;
         right: 35px;
@@ -143,28 +188,32 @@
                     data.courses.forEach(course => {
                         let percentageComplete = course.totalEvaluations === 0 ? 0 : ((course.totalEvaluations - course.notCompletedEvaluations) / course.totalEvaluations) * 100;
                         let courseCardHtml = `
-                            <div class="card mb-3">
+                            <div class="card mb-3 course-card shadow-sm">
                                 <div class="card-body">
                                     <h5 class="card-title">${course.courseName}</h5>
-                                    <div class="course-details">
-                                        <p class="course-detail-label">Course Code:</p>
-                                        <p class="card-text">${course.courseCode}</p>
-                                        <p class="course-detail-label">Semester:</p>
-                                        <p class="card-text">${course.semester}</p>
-                                        <p class="course-detail-label">Time:</p>
-                                        <p class="card-text">${course.courseTime}</p>
-                                        <p class="course-detail-label">Year:</p>
-                                        <p class="card-text">${course.year}</p>
-                                        <p class="course-detail-label">Due Dates:</p>
-                                        <p class="card-text">${course.dueDates}</p>
-                                        <p class="course-detail-label">Total Groups:</p>
-                                        <p class="card-text">${course.totalGroups}</p>
-                                        <p class="course-detail-label">Total Students:</p>
-                                        <p class="card-text">${course.totalStudents}</p>
-                                    </div>
-                                    <div class="pie-chart" style="background-image: conic-gradient(green ${percentageComplete}%, red ${percentageComplete}%, red 100%); width: 100px; height: 100px; border-radius: 50%;">
-                                        <span class="pie-chart-text">${percentageComplete.toFixed(2)}%</span>
-                                    </div>
+                                        <div class="course-info">
+                                            <p class="course-detail-label">Course Code:</p>
+                                            <p class="text-muted">${course.courseCode}</p>
+                                            <p class="course-detail-label">Semester:</p>
+                                            <p class="text-muted">${course.semester}</p>
+                                            <p class="course-detail-label">Time:</p>
+                                            <p class="card-text">${course.courseTime}</p>
+                                            <p class="course-detail-label">Year:</p>
+                                            <p class="card-text">${course.year}</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <p class="course-detail-label">Due Dates:</p>
+                                            <p class="card-text">${course.dueDates}</p>
+                                            <p class="course-detail-label">Total Groups:</p>
+                                            <p class="card-text">${course.totalGroups}</p>
+                                            <p class="course-detail-label">Total Students:</p>
+                                            <p class="card-text">${course.totalStudents}</p>
+                                        <div>
+                                        <div class "evaluation-info mt-4">
+                                            <div class="pie-chart" style="background-image: conic-gradient(green ${percentageComplete}%, red ${percentageComplete}%, red 100%); width: 100px; height: 100px; border-radius: 50%;">
+                                                <span class="pie-chart-text">${percentageComplete.toFixed(2)}%</span>
+                                            </div>
+                                        </div>
                                     <a href="/EditClass?session_id=${sessionId}&course_id=${course.courseId}" class="btn btn-primary">Edit Class</a>
                                 </div>
                             </div>`;
