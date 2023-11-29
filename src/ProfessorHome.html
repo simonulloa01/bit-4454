@@ -62,14 +62,14 @@
 
 <body>
     <div class="container mt-5">
-
-
         <div class="container mt-5">
-            <h1 id="professorName">Welcome</h1>
+            <h1 id="professorName">Your dashboard is loading.</h1>
             <div id="coursesContainer" class="d-flex justify-content-center">
                 <!-- Courses will be dynamically inserted here -->
-                <img id="loadingImg" class="mt-5 d-block mx-auto" src="https://cdn.pixabay.com/animation/2023/05/02/04/29/04-29-06-428_512.gif" height="100" width="100" alt="Placeholder image" />       
-                 <!-- Consider using "row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" for card columns -->
+                <img id="loadingImg" class="mt-5 d-block mx-auto"
+                    src="https://cdn.pixabay.com/animation/2023/05/02/04/29/04-29-06-428_512.gif" height="100"
+                    width="100" alt="Placeholder image" />
+                <!-- Consider using "row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" for card columns -->
             </div>
         </div>
 
@@ -98,9 +98,10 @@
             .then(data => {
                 if (data.professorInfo && data.courses.length > 0) {
                     const professor = data.professorInfo;
-                    $('#professorName').text(`${professor.firstName} ${professor.lastName}`);
+                    $('#professorName').text(`Welcome to your dashboard ${professor.firstName} ${professor.lastName}.`);
                     $('#loadingImg').hide();
                     data.courses.forEach(course => {
+                        let percentageComplete = course.totalEvaluations === 0 ? 0 : ((course.totalEvaluations - course.notCompletedEvaluations) / course.totalEvaluations) * 100;
                         let courseCardHtml = `
                             <div class="card mb-3">
                                 <div class="card-body">
@@ -109,6 +110,11 @@
                                     <p class="card-text">Semester: ${course.semester}</p>
                                     <p class="card-text">Time: ${course.courseTime}</p>
                                     <p class="card-text">Year: ${course.year}</p>
+                                    <p class="card-text">Due Dates: ${course.dueDates}</p>
+                                    <p class="card-text">Total Groups: ${course.totalGroups}</p>
+                                    <p class="card-text">Total Students: ${course.totalStudents}</p>
+                                    <p class="card-text">Peer Evaluations: ${percentageComplete.toFixed(2)}% complete</p>
+                                    <div class="pie-chart" style="background-image: conic-gradient(green ${percentageComplete}%, red ${percentageComplete}%, red 100%); width: 100px; height: 100px; border-radius: 50%;"></div>
                                     <a href="/EditClass?session_id=${sessionId}&course_id=${course.courseId}" class="btn btn-primary">Edit Class</a>
                                 </div>
                             </div>`;

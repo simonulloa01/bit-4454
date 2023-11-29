@@ -26,7 +26,7 @@ app.http('getProfessorInfo', {
 
         try {
             const query = `
-                SELECT 
+                    SELECT 
                     s.CourseID,
                     s.ProfessorID,
                     s.CourseName,
@@ -38,17 +38,60 @@ app.http('getProfessorInfo', {
                     p.LastName,
                     p.Email,
                     p.Department,
-                    p.Phone
+                    p.Phone,
+                    sch.DueDates,
+                    sg.TotalGroups,
+                    sg.TotalStudents,
+                    pe.TotalEvaluations,
+                    pe.NotCompletedEvaluations
                 FROM 
                     section s
                 JOIN 
                     professor p ON s.ProfessorID = p.ProfessorID
                 JOIN 
                     sessions se ON s.ProfessorID = se.professor_id
-                WHERE 
-                    se.session_id = ?;
+                LEFT JOIN (
+                    SELECT 
+                        CourseID, 
+                        GROUP_CONCAT(DueDate ORDER BY DueDate SEPARATOR ', ') as DueDates
+                    FROM (
+                        SELECT 
+                            CourseID, DueDate,
+                            ROW_NUMBER() OVER (PARTITION BY CourseID ORDER BY DueDate) as rn
+                        FROM 
+                            schedule
+                        WHERE 
+                            DueDate >= CURRENT_DATE
+                    ) as RankedDates
+                    WHERE rn <= 3
+                    GROUP BY CourseID
+                ) sch ON s.CourseID = sch.CourseID
+                LEFT JOIN (
+                    SELECT 
+                        CourseID,
+                        COUNT(DISTINCT GroupID) as TotalGroups,
+                        COUNT(DISTINCT StudentID) as TotalStudents
+                    FROM 
+                        studentgroups
+                    GROUP BY 
+                        CourseID
+                ) sg ON s.CourseID = sg.CourseID
+                LEFT JOIN (
+                    SELECT 
+                        sch.CourseID,
+                        COUNT(pe.EvaluationID) as TotalEvaluations,
+                        SUM(CASE WHEN pe.CompletionDate IS NULL THEN 1 ELSE 0 END) as NotCompletedEvaluations
+                    FROM 
+                        schedule sch
+                    LEFT JOIN 
+                        peerevaluations pe ON sch.ScheduleID = pe.ScheduleID
+                    GROUP BY 
+                        sch.CourseID
+                ) pe ON s.CourseID = pe.CourseID
+                WHERE        
+                            se.session_id = ?;
             `;
-            var [rows, fields] = await new Promise((resolve, reject) => {
+            let rows = await new Promise((resolve, reject) => {
                 db.query(query, [session_id], function (error, results) {
                     if (error) return reject(error);
                     resolve(results);
@@ -61,6 +104,7 @@ app.http('getProfessorInfo', {
                     body: 'Professor not found'
                 };
             }
+            console.log("Rows returned from query: ", rows); // Add this line for debugging
             //TODO Get amount of students
             rows = Array.isArray(rows) ? rows : [rows];
             const professor = {
@@ -78,7 +122,12 @@ app.http('getProfessorInfo', {
                     courseCode: row.CourseCode,
                     semester: row.Semester,
                     courseTime: row.CourseTime,
-                    year: row.Year
+                    year: row.Year,
+                    dueDates: row.DueDates,
+                    totalGroups: row.TotalGroups,
+                    totalStudents: row.TotalStudents,
+                    totalEvaluations: row.TotalEvaluations,
+                    notCompletedEvaluations: row.NotCompletedEvaluations
                 }))
             };
 
