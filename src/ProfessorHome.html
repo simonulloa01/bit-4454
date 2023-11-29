@@ -176,6 +176,7 @@
                                         <br>
                                         <small class=" float-left">${course.courseCode} ${course.courseTime}</small>
                                         <small class=" float-right">${course.semester} ${course.year}</small>
+                                    </div>
                                     <div class="card-body mb-3">
                                         <p class="course-detail-label">Due Dates:</p>
                                         ${dueDatesArray.map(dueDate => `<p class="badge bg-warning">${dueDate}</p><br>`).join('')}
@@ -184,11 +185,12 @@
                                         <p class="course-detail-label">Total Students:</p>
                                         <p class="card-text">${course.totalStudents}</p>
                                     
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" style="width: ${percentageComplete}%;" aria-valuenow="${percentageComplete}" aria-valuemin="0" aria-valuemax="100">${percentageComplete}% peer evauations submitted.(${course.totalEvaluations - course.notCompletedEvaluations}/${course.totalEvaluations})</div>
-                                    </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: ${percentageComplete}%;" aria-valuenow="${percentageComplete}" aria-valuemin="0" aria-valuemax="100">${percentageComplete}% peer evauations submitted.(${course.totalEvaluations - course.notCompletedEvaluations}/${course.totalEvaluations})</div>
+                                        </div>
                                         <a href="/EditClass?session_id=${sessionId}&course_id=${course.courseId}" class="btn btn-primary mt-3">Edit Class</a>
                                     </div>
+                                </div>
                             </div>
                         </div>
                     </div>`;
