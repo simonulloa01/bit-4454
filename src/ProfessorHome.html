@@ -97,6 +97,7 @@
     .course-info p,
     .evaluation-info p {
         font-size: 0.9rem;
+        color: white;
     }
 
     .btn-smu {
@@ -110,25 +111,22 @@
         border-color: var(--smu-red);
     }
 
-    /* Pie Chart Styles */
     .pie-chart {
-        height: 4rem;
-        width: 4rem;
-        border-radius: 50%;
         display: flex;
         justify-content: center;
         align-items: center;
-        margin: 0 auto;
+        font-size: 0.75rem;
+        color: white;
+        border-radius: 50%;
+        /* Removed margin and position styles */
     }
 
+    /* Responsive aspect ratio for the pie chart */
     .pie-chart:before {
         content: '';
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        box-shadow: inset 0 0 5px #555;
-        /* Gives a slight 3D effect */
+        display: block;
+        padding-top: 100%;
+        /* Aspect ratio 1:1 */
     }
 
     .pie-chart-text {
@@ -166,7 +164,7 @@
         <h1 class="text-center">SMU Peer Evaluation Professor Dashboard</h1>
         <div class="container mt-1 mb-5">
             <h1 class="text-center" id="professorName">Your dashboard is loading...</h1>
-            <div id="coursesContainer" class="d-flex justify-content-center">
+            <div id="coursesContainer" class="row d-flex justify-content-center">
                 <!-- Courses will be dynamically inserted here -->
                 <img id="loadingImg" class="mt-5 d-block mx-auto"
                     src="https://cdn.pixabay.com/animation/2023/05/02/04/29/04-29-06-428_512.gif" height="100"
@@ -201,49 +199,50 @@
                 if (data.professorInfo && data.courses.length > 0) {
                     const professor = data.professorInfo;
                     $('#professorName').text(`Welcome to your dashboard ${professor.firstName} ${professor.lastName}.`);
-                    $('#loadingImg').remove();
+                    $('#loadingImg').hide(); // Changed from .remove() to .hide() to maintain layout structure
                     data.courses.forEach(course => {
                         let percentageComplete = course.totalEvaluations === 0 ? 0 : ((course.totalEvaluations - course.notCompletedEvaluations) / course.totalEvaluations) * 100;
-                        let completedColor = '--smu-red'; // Assume this is for the completed part
-                        let notCompletedColor = '--smu-blue'; // Assume this is for the not completed part
                         let courseCardHtml = `
-                            <div class="card mb-3 course-card shadow-sm">
+                    <div class="card mb-3">
+                        <div class="row no-gutters">
+                            <div class="col-md-4 d-flex align-items-center justify-content-center">
+                                <div class="pie-chart" style="background-image: conic-gradient(var(--smu-red) ${percentageComplete}%, var(--smu-blue) ${percentageComplete}%, var(--smu-blue) 100%); width: 100%; height: auto; padding-top: 100%;"></div>
+                            </div>
+                            <div class="col-md-8">
                                 <div class="card-body">
                                     <h5 class="card-title">${course.courseName}</h5>
-                                        <div class="course-info">
-                                            <p class="course-detail-label">Course Code:</p>
-                                            <p class="text-muted">${course.courseCode}</p>
-                                            <p class="course-detail-label">Semester:</p>
-                                            <p class="text-muted">${course.semester}</p>
-                                            <p class="course-detail-label">Time:</p>
-                                            <p class="card-text">${course.courseTime}</p>
-                                            <p class="course-detail-label">Year:</p>
-                                            <p class="card-text">${course.year}</p>
-                                        </div>
-                                        <div class="mb-3">
-                                            <p class="course-detail-label">Due Dates:</p>
-                                            <p class="card-text">${course.dueDates}</p>
-                                            <p class="course-detail-label">Total Groups:</p>
-                                            <p class="card-text">${course.totalGroups}</p>
-                                            <p class="course-detail-label">Total Students:</p>
-                                            <p class="card-text">${course.totalStudents}</p>
-                                        <div>
-                                        <div class "evaluation-info mt-4">
-                                            <div class="pie-chart" style="background-image: conic-gradient(var(${completedColor}) ${percentageComplete}%, var(${notCompletedColor}) ${percentageComplete}%, var(${notCompletedColor}) 100%);"></div>
-                                        </div>
+                                    <div class="mb-3">
+                                        <p class="course-detail-label">Course Code:</p>
+                                        <p class="card-text">${course.courseCode}</p>
+                                        <p class="course-detail-label">Semester:</p>
+                                        <p class="card-text">${course.semester}</p>
+                                        <p class="course-detail-label">Time:</p>
+                                        <p class="card-text">${course.courseTime}</p>
+                                        <p class="course-detail-label">Year:</p>
+                                        <p class="card-text">${course.year}</p>
+                                        <p class="course-detail-label">Due Dates:</p>
+                                        <p class="card-text">${course.dueDates}</p>
+                                        <p class="course-detail-label">Total Groups:</p>
+                                        <p class="card-text">${course.totalGroups}</p>
+                                        <p class="course-detail-label">Total Students:</p>
+                                        <p class="card-text">${course.totalStudents}</p>
                                     </div>
                                     <a href="/EditClass?session_id=${sessionId}&course_id=${course.courseId}" class="btn btn-primary">Edit Class</a>
                                 </div>
-                            </div>`;
+                            </div>
+                        </div>
+                    </div>`;
                         $('#coursesContainer').append(courseCardHtml);
                     });
                 } else {
                     $('#professorName').text('No data found');
+                    $('#loadingImg').hide();
                 }
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
                 $('#professorName').text('Error fetching data');
+                $('#loadingImg').hide();
             });
     });
 </script>
