@@ -168,20 +168,27 @@
                         let dueDatesArray = course.dueDates.split(', ');
                         let courseCardHtml = `
                                 <div class="card w-75 mb-3">
-                                    <div class="card-header bg-primary text-white mb-5">
+                                    <div class="card-header bg-primary text-white">
                                         <strong>${course.courseName}</strong>
                                         <br>
                                         <small class=" float-left">${course.courseTime}</small>
                                         <small class=" float-right">${course.semester} ${course.year}</small>
                                     </div>
-                                    <div class="card-body mb-3">
-                                        <p class="course-detail-label">Due Dates:</p>
-                                        ${dueDatesArray.map(dueDate => `<p class="badge bg-warning">${dueDate}</p><br>`).join('')}
-                                        <p class="course-detail-label">Total Groups:</p>
-                                        <p class="card-text">${course.totalGroups}</p>
-                                        <p class="course-detail-label">Total Students:</p>
-                                        <p class="card-text">${course.totalStudents}</p>
-                                    
+                                    <div class="card-body mb-1">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <p class="course-detail-label">Due Dates:</p>
+                                                ${dueDatesArray.map(dueDate => `<span class="badge bg-warning text-dark">${dueDate}</span>`).join(' ')}
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p class="course-detail-label">Total Groups:</p>
+                                                <p class="card-text">${course.totalGroups}</p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p class="course-detail-label">Total Students:</p>
+                                                <p class="card-text">${course.totalStudents}</p>
+                                            </div>
+                                        </div>    
                                         <div class="progress">
                                             <div class="progress-bar" role="progressbar" style="width: ${percentageComplete}%;" aria-valuenow="${percentageComplete}" aria-valuemin="0" aria-valuemax="100">${percentageComplete}% peer evauations submitted.(${course.totalEvaluations - course.notCompletedEvaluations}/${course.totalEvaluations})</div>
                                         </div>
