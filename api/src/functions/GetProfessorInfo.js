@@ -26,7 +26,7 @@ app.http('getProfessorInfo', {
 
         try {
             const query = `
-                    SELECT 
+                SELECT 
                     s.CourseID,
                     s.ProfessorID,
                     s.CourseName,
@@ -77,10 +77,10 @@ app.http('getProfessorInfo', {
                         CourseID
                 ) sg ON s.CourseID = sg.CourseID
                 LEFT JOIN (
-                    SELECT 
+                SELECT 
                         sch.CourseID,
-                        COUNT(pe.EvaluationID) as TotalEvaluations,
-                        SUM(CASE WHEN pe.CompletionDate IS NULL THEN 1 ELSE 0 END) as NotCompletedEvaluations
+                        COUNT(DISTINCT pe.EvaluationID) as TotalEvaluations,
+                        COUNT(DISTINCT CASE WHEN pe.CompletionDate IS NULL THEN pe.EvaluationID END) as NotCompletedEvaluations
                     FROM 
                         schedule sch
                     LEFT JOIN 
@@ -88,7 +88,7 @@ app.http('getProfessorInfo', {
                     GROUP BY 
                         sch.CourseID
                 ) pe ON s.CourseID = pe.CourseID
-                WHERE        
+                WHERE
                             se.session_id = ?;
             `;
             let rows = await new Promise((resolve, reject) => {
