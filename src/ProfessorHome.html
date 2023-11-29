@@ -62,8 +62,9 @@
 
 <body>
     <div class="container mt-5">
-        <div class="container mt-5">
-            <h1 id="professorName">Your dashboard is loading.</h1>
+        <h1 class="text-center">SMU Peer Evaluation Professor Dashboard</h1>
+        <div class="container mt-1 mb-5">
+            <h1 class="text-center" id="professorName">Your dashboard is loading...</h1>
             <div id="coursesContainer" class="d-flex justify-content-center">
                 <!-- Courses will be dynamically inserted here -->
                 <img id="loadingImg" class="mt-5 d-block mx-auto"
@@ -99,7 +100,7 @@
                 if (data.professorInfo && data.courses.length > 0) {
                     const professor = data.professorInfo;
                     $('#professorName').text(`Welcome to your dashboard ${professor.firstName} ${professor.lastName}.`);
-                    $('#loadingImg').hide();
+                    $('#loadingImg').remove();
                     data.courses.forEach(course => {
                         let percentageComplete = course.totalEvaluations === 0 ? 0 : ((course.totalEvaluations - course.notCompletedEvaluations) / course.totalEvaluations) * 100;
                         let courseCardHtml = `
