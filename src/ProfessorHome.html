@@ -179,7 +179,7 @@
                                         <small class="text-muted float-right">${course.semester} ${course.year}</small>
                                     <div class="card-body mb-3">
                                         <p class="course-detail-label">Due Dates:</p>
-                                        ${dueDatesArray.map(dueDate => `<p class="card-text bg-warning">${dueDate}</p>`).join('')}
+                                        ${dueDatesArray.map(dueDate => `<p class="badge bg-warning">${dueDate}</p>`).join('')}
                                         <p class="course-detail-label">Total Groups:</p>
                                         <p class="card-text">${course.totalGroups}</p>
                                         <p class="course-detail-label">Total Students:</p>
@@ -197,13 +197,12 @@
                     });
                 } else {
                     $('#professorName').text('No data found');
-                    $('#loadingImg').hide();
+                    $('#loadingImg').remove();
                 }
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
                 $('#professorName').text('Error fetching data');
-                $('#loadingImg').remove();
             });
     });
 
