@@ -168,13 +168,12 @@
                         let dueDatesArray = course.dueDates.split(', ');
                         let courseCardHtml = `
                     <div class="card w-75 mb-3">
-                        <div class="row no-gutters">
-                            <div class="col-md-12">
+                        <div class="row">
                                 <div class="card-body">
                                     <div class="card-header bg-primary text-white mb-3">
                                         <strong>${course.courseName}</strong>
                                         <br>
-                                        <small class=" float-left">${course.courseCode} ${course.courseTime}</small>
+                                        <small class=" float-left">${course.courseTime}</small>
                                         <small class=" float-right">${course.semester} ${course.year}</small>
                                     </div>
                                     <div class="card-body mb-3">
@@ -191,7 +190,6 @@
                                         <a href="/EditClass?session_id=${sessionId}&course_id=${course.courseId}" class="btn btn-primary mt-3">Edit Class</a>
                                     </div>
                                 </div>
-                            </div>
                         </div>
                     </div>`;
                         $('#coursesContainer').append(courseCardHtml);
