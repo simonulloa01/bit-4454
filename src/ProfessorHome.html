@@ -171,15 +171,14 @@
                         <div class="row no-gutters">
                             <div class="col-md-12">
                                 <div class="card-body">
-                                    <div class="card-header">
+                                    <div class="card-header bg-primary text-white">
                                         <strong>${course.courseName}</strong>
                                         <br>
-                                        <small class="text-muted float-left">${course.courseCode}</small>
-                                        <small class="text-muted float-middle">${course.courseTime}</small>
-                                        <small class="text-muted float-right">${course.semester} ${course.year}</small>
+                                        <small class=" float-left">${course.courseCode} ${course.courseTime}</small>
+                                        <small class=" float-right">${course.semester} ${course.year}</small>
                                     <div class="card-body mb-3">
                                         <p class="course-detail-label">Due Dates:</p>
-                                        ${dueDatesArray.map(dueDate => `<p class="badge bg-warning">${dueDate}</p>`).join('')}
+                                        ${dueDatesArray.map(dueDate => `<p class="badge bg-warning">${dueDate}</p><br>`).join('')}
                                         <p class="course-detail-label">Total Groups:</p>
                                         <p class="card-text">${course.totalGroups}</p>
                                         <p class="course-detail-label">Total Students:</p>
