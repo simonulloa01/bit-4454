@@ -1,60 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professor Info</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<style>
+    :root {
+        --smu-blue: #141B4D;
+        /* SMU Blue, replace with actual code */
+        --smu-red: #8A704C;
+        /* SMU Red, replace with actual code */
+    }
+
+    .btn-primary {
+        background-color: var(--smu-blue);
+        border-color: var(--smu-blue);
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus,
+    .btn-primary:active {
+        background-color: var(--smu-red) !important;
+        border-color: var(--smu-red) !important;
+    }
+
+    .bg-primary {
+        background-color: var(--smu-red) !important;
+    }
+
+    .navbar,
+    .footer {
+        background-color: var(--smu-blue);
+    }
+
+    h1 {
+        color: var(--smu-blue);
+    }
+
+    /* Add more custom styles here, like for fonts if SMU has specific ones */
+    body,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: sans-serif;
+
+        /* replace 'Your-SMU-Font' with SMU's font if available */
+    }
+
+    /* If you have the SMU logo, you can style it here */
+    .smu-logo {
+        height: 60px;
+        /* Or appropriate size */
+    }
+</style>
+
 <body>
     <div class="container mt-5">
-        <h1 id="professorName">Loading...</h1>
-        <div id="courseInfo" class="mt-3">
-            <p>Course Name: <span id="courseName"></span></p>
-            <p>Course Code: <span id="courseCode"></span></p>
-            <p>Semester: <span id="semester"></span></p>
-            <p>Time: <span id="courseTime"></span></p>
-            <p>Year: <span id="year"></span></p>
+
+
+        <div class="container mt-5">
+            <h1 id="professorName">Welcome</h1>
+            <div id="coursesContainer" class="d-flex justify-content-center">
+                <!-- Courses will be dynamically inserted here -->
+                <img class="mt-5 d-block mx-auto" src="https://cdn.pixabay.com/animation/2023/05/02/04/29/04-29-06-428_512.gif" height="100" width="100" alt="Placeholder image" />       
+                 <!-- Consider using "row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" for card columns -->
+            </div>
         </div>
-        <a href="" id="editClassBtn" class="btn btn-primary">Edit Class</a>
-    </div>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            const params = new URLSearchParams(window.location.search);
-            const sessionId = params.get('session');
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const params = new URLSearchParams(window.location.search);
+        const sessionId = params.get('session');
 
-            if (!sessionId) {
-                $('#professorName').text('Session ID not provided in the URL');
-                return;
-            }
+        if (!sessionId) {
+            $('#professorName').text('Session ID not provided in the URL');
+            return;
+        }
 
-            fetch(`/api/getProfessorInfo/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ session_id: sessionId })
-            })
+        fetch(`http://localhost:7071/api/getProfessorInfo`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ session_id: sessionId })
+        })
             .then(response => response.json())
             .then(data => {
                 if (data.professorInfo && data.courses.length > 0) {
                     const professor = data.professorInfo;
-                    const course = data.courses[0];
-
                     $('#professorName').text(`${professor.firstName} ${professor.lastName}`);
-                    $('#courseName').text(course.courseName);
-                    $('#courseCode').text(course.courseCode);
-                    $('#semester').text(course.semester);
-                    $('#courseTime').text(course.courseTime);
-                    $('#year').text(course.year);
 
-                    const editClassUrl = `/EditClass?session_id=${sessionId}&course_id=${course.courseId}`;
-                    $('#editClassBtn').attr('href', editClassUrl);
+                    data.courses.forEach(course => {
+                        let courseCardHtml = `
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">${course.courseName}</h5>
+                                    <p class="card-text">Course Code: ${course.courseCode}</p>
+                                    <p class="card-text">Semester: ${course.semester}</p>
+                                    <p class="card-text">Time: ${course.courseTime}</p>
+                                    <p class="card-text">Year: ${course.year}</p>
+                                    <a href="/EditClass?session_id=${sessionId}&course_id=${course.courseId}" class="btn btn-primary">Edit Class</a>
+                                </div>
+                            </div>`;
+                        $('#coursesContainer').append(courseCardHtml);
+                    });
                 } else {
                     $('#professorName').text('No data found');
                 }
@@ -63,7 +122,7 @@
                 console.error('Error fetching data:', error);
                 $('#professorName').text('Error fetching data');
             });
-        });
-    </script>
-</body>
+    });
+</script>
+
 </html>
