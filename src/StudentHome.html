@@ -38,15 +38,18 @@
       background-color: var(--smu-blue);
     }
 
+    h1 {
+      color: var(--smu-blue);
+    }
     /* Add more custom styles here, like for fonts if SMU has specific ones */
     body,
-    h1,
     h2,
     h3,
     h4,
     h5,
     h6 {
-      font-family: 'Your-SMU-Font', sans-serif;
+      font-family: sans-serif;
+      
       /* replace 'Your-SMU-Font' with SMU's font if available */
     }
 
@@ -184,18 +187,16 @@
         </h1>
         <h2 id="studentIntro"></h2>
         <p class="text-center">
-          Use this system to evaluate your peers and receive evaluations from
-          them.
+          Use this system to evaluate your peers and receive evaluations from      them.
         </p>
 
       </div>
     </div>
 
-    <div class="row">
+    <div class="d-flex justify-content-center">
       <!-- This is where individual peer reviews will be placed using JavaScript -->
       <div id="studentInfoContent" class="row">
-
-        <!-- Consider using "row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" for card columns -->
+        <img class="mt-5 d-block mx-auto" src="https://cdn.pixabay.com/animation/2023/05/02/04/29/04-29-06-428_512.gif" height="100" width="100" alt="Placeholder image" />        <!-- Consider using "row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" for card columns -->
       </div>
     </div>
 
