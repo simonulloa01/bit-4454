@@ -162,7 +162,7 @@
                 if (data.professorInfo && data.courses.length > 0) {
                     const professor = data.professorInfo;
                     $('#professorName').text(`Welcome to your dashboard ${professor.firstName} ${professor.lastName}.`);
-                    $('#loadingImg').hide();
+                    $('#loadingImg').remove();
                     data.courses.forEach(course => {
                         let percentageComplete = course.totalEvaluations === 0 ? 100 : ((course.totalEvaluations - course.notCompletedEvaluations) / course.totalEvaluations) * 100;
                         let dueDatesArray = course.dueDates.split(', ');
