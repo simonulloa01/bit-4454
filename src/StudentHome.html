@@ -148,7 +148,7 @@
                 Review for <strong>${review.ReceiverName}</strong>
                 <div class="text-muted">Due: <span class="badge  ${review.CompletionDate == null ? " bg-warning" : "bg-success"} text-dark">${new Date(review.DueDate).toLocaleDateString()}</span></div>
               </div>
-              <a href="${review.url}" target="_blank" class="btn btn-sm btn-outline-primary">${buttonText}</a>
+              <a href="${review.url}" target="_blank" class="btn btn-sm btn-primary">${buttonText}</a>
             </div>
           `;
           });
