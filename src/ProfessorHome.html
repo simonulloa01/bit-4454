@@ -68,7 +68,7 @@
             <h1 id="professorName">Welcome</h1>
             <div id="coursesContainer" class="d-flex justify-content-center">
                 <!-- Courses will be dynamically inserted here -->
-                <img class="mt-5 d-block mx-auto" src="https://cdn.pixabay.com/animation/2023/05/02/04/29/04-29-06-428_512.gif" height="100" width="100" alt="Placeholder image" />       
+                <img id="loadingImg" class="mt-5 d-block mx-auto" src="https://cdn.pixabay.com/animation/2023/05/02/04/29/04-29-06-428_512.gif" height="100" width="100" alt="Placeholder image" />       
                  <!-- Consider using "row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" for card columns -->
             </div>
         </div>
@@ -99,7 +99,7 @@
                 if (data.professorInfo && data.courses.length > 0) {
                     const professor = data.professorInfo;
                     $('#professorName').text(`${professor.firstName} ${professor.lastName}`);
-
+                    $('#loadingImg').hide();
                     data.courses.forEach(course => {
                         let courseCardHtml = `
                             <div class="card mb-3">
