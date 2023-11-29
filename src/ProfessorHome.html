@@ -115,11 +115,28 @@
         height: 4rem;
         width: 4rem;
         border-radius: 50%;
-        
         display: flex;
         justify-content: center;
         align-items: center;
         margin: 0 auto;
+    }
+
+    .pie-chart:before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        box-shadow: inset 0 0 5px #555;
+        /* Gives a slight 3D effect */
+    }
+
+    .pie-chart-text {
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        line-height: 100px;
+        /* Adjust line-height to vertically center the text in the circle */
     }
 
     .pie-chart span {
@@ -187,6 +204,8 @@
                     $('#loadingImg').remove();
                     data.courses.forEach(course => {
                         let percentageComplete = course.totalEvaluations === 0 ? 0 : ((course.totalEvaluations - course.notCompletedEvaluations) / course.totalEvaluations) * 100;
+                        let completedColor = '--smu-red'; // Assume this is for the completed part
+                        let notCompletedColor = '--smu-blue'; // Assume this is for the not completed part
                         let courseCardHtml = `
                             <div class="card mb-3 course-card shadow-sm">
                                 <div class="card-body">
@@ -210,10 +229,9 @@
                                             <p class="card-text">${course.totalStudents}</p>
                                         <div>
                                         <div class "evaluation-info mt-4">
-                                            <div class="pie-chart" style="background-image: conic-gradient(green ${percentageComplete}%, red ${percentageComplete}%, red 100%); width: 100px; height: 100px; border-radius: 50%;">
-                                                <span class="pie-chart-text">${percentageComplete.toFixed(2)}%</span>
-                                            </div>
+                                            <div class="pie-chart" style="background-image: conic-gradient(var(${completedColor}) ${percentageComplete}%, var(${notCompletedColor}) ${percentageComplete}%, var(${notCompletedColor}) 100%);"></div>
                                         </div>
+                                    </div>
                                     <a href="/EditClass?session_id=${sessionId}&course_id=${course.courseId}" class="btn btn-primary">Edit Class</a>
                                 </div>
                             </div>`;
