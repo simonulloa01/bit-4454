@@ -167,10 +167,8 @@
                         let percentageComplete = course.totalEvaluations === 0 ? 100 : ((course.totalEvaluations - course.notCompletedEvaluations) / course.totalEvaluations) * 100;
                         let dueDatesArray = course.dueDates.split(', ');
                         let courseCardHtml = `
-                    <div class="card w-75 mb-3">
-                        <div class="row">
-                                <div class="card-body">
-                                    <div class="card-header bg-primary text-white mb-3">
+                                <div class="card w-75 mb-3">
+                                    <div class="card-header bg-primary text-white mb-5">
                                         <strong>${course.courseName}</strong>
                                         <br>
                                         <small class=" float-left">${course.courseTime}</small>
@@ -189,9 +187,7 @@
                                         </div>
                                         <a href="/EditClass?session_id=${sessionId}&course_id=${course.courseId}" class="btn btn-primary mt-3">Edit Class</a>
                                     </div>
-                                </div>
-                        </div>
-                    </div>`;
+                                </div>`;
                         $('#coursesContainer').append(courseCardHtml);
                     });
                 } else {
