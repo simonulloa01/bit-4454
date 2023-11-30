@@ -67,7 +67,7 @@
                     <!-- Each form group -->
                     <div class="form-group mb-4">
                         <label for="name">Team Member</label>
-                        <input type="text"  class="form-control" id="name" placeholder="John Doe" readonly>
+                        <input type="text" class="form-control" id="name" placeholder="John Doe" readonly>
                     </div>
 
                     <!-- Repeated for each field... -->
@@ -139,6 +139,7 @@
         var urlParams = new URLSearchParams(window.location.search);
         var session_id = urlParams.get('session_id');
         var ScheduleID = urlParams.get('ScheduleID');
+        var WriterStudentID = urlParams.get('WriterStudentID');
         var ReceiverStudentID = urlParams.get('ReceiverStudentID');
         var EvaluationID; // We will set this after the initial fetch
         // Prepare the payload
@@ -195,7 +196,7 @@
                 ScheduleID: parseInt(ScheduleID),
                 ReceiverStudentID: parseInt(ReceiverStudentID),
                 EvaluationID: EvaluationID, // This should be set based on the initial data fetched
-                WriterStudentID: 1, // This needs to be dynamically fetched or set
+                WriterStudentID: parseInt(WriterStudentID), // This needs to be dynamically fetched or set
                 CompletionDate: null, // This can be set based on your logic
                 DisciplinaryKnowledge: $('#knowledge').val(),
                 IntellectualSkills: $('#skills').val(),

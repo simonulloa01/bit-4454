@@ -107,7 +107,7 @@ app.http('getStudentInfo', {
                 });
                 peerReviews = Array.isArray(peerReviews) ? peerReviews : [peerReviews];
                 peerReviews.forEach(element => {
-                    element.url = `https://zealous-plant-073f3f80f.4.azurestaticapps.net/submitFeedback?session_id=${session_id}&ScheduleID=${element.ScheduleID}&ReceiverStudentID=${element.ReceiverStudentID}`
+                    element.url = `https://zealous-plant-073f3f80f.4.azurestaticapps.net/submitFeedback?session_id=${session_id}&ScheduleID=${element.ScheduleID}&ReceiverStudentID=${element.ReceiverStudentID}&WriterStudentID=${element.WriterStudentID}`
                 });
                 courseInfo.peerReviews = peerReviews; // add peer reviews to the course info
                 return courseInfo;
