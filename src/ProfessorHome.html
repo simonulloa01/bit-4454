@@ -173,6 +173,33 @@
         const params = new URLSearchParams(window.location.search);
         const sessionId = params.get('session');
 
+        $(document).on('click', '.datepicker-button', function () {
+            // Create a new input element
+            var $input = $('<input type="text" class="temp-datepicker">').appendTo('body');
+
+            // Initialize datepicker on this new input
+            $input.datepicker({
+                autoclose: true,
+                todayHighlight: true
+            })
+            .on('changeDate', function(e) {
+                // Handle the date change event if needed
+                var selectedDate = e.format('yyyy-mm-dd');
+                var courseId = $(this).data('course-id');
+                // ... additional code for what to do with the selected date ...
+
+                // Remove the input after use
+                $(this).remove();
+            })
+            .on('hide', function() {
+                // Remove the input when the datepicker is closed
+                $(this).remove();
+            });
+
+            // Show the datepicker
+            $input.datepicker('show');
+        });
+        
         if (!sessionId) {
             $('#professorName').text('Session ID not provided in the URL');
             return;
@@ -267,4 +294,5 @@
         });
     });
 </script>
+
 </html>
