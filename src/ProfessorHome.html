@@ -216,6 +216,7 @@
         // Event delegation for dynamically added date picker button
         $(document).on('click', '#datepickerButton', function () {
             // Create a new input element
+            var $overlay = $('<div class="overlay"></div>').appendTo('body');
             var $input = $('<input type="text" class="temp-datepicker">').appendTo('body');
             var courseId = $(this).data('course-id');
             // Initialize datepicker on this new input
@@ -252,10 +253,12 @@
                     xhr.send(data); // Send the request
                     // Remove the input after use
                     $(this).remove();
+                    $overlay.remove();
                 })
                 .on('hide', function () {
                     // Remove the input when the datepicker is closed
                     $(this).remove();
+                    $overlay.remove();
                 });
 
             // Show the datepicker
