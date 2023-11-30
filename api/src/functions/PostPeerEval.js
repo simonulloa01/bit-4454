@@ -31,7 +31,7 @@ app.http('PostPeerEval', {
         //Try to post to the schedule table (ScheduleID, DueDate, CourseID) 
         try {
             const query = `
-            INSERT INTO schedule ( DueDate, CourseID) VALUES ( ?, ?)
+            INSERT INTO schedule (DueDate, CourseID) VALUES ( ?, ?)
             `;
             const queryData = [
                 body.DueDate,

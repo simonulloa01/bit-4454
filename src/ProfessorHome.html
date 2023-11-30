@@ -199,7 +199,7 @@
                                         </div>
                                         <small class="text-muted d-flex justify-content-center">${percentageComplete}% peer evauations submitted.(${course.totalEvaluations - course.notCompletedEvaluations}/${course.totalEvaluations})</small>
                                         <a href="/EditClass?session_id=${sessionId}&course_id=${course.courseId}" class="btn btn-primary mt-3 float-left">Edit Class</a>
-                                        <a class="btn btn-primary mt-3 float-right" id="datepickerButton" course-id="${course.courseId}">Add Peer Evaluation</a>                             
+                                        <a class="btn btn-primary mt-3 float-right" id="datepickerButton" data-course-id="${course.courseId}">Add Peer Evaluation</a>                             
                                     </div>
                         </div>`;
                         $('#coursesContainer').append(courseCardHtml);
