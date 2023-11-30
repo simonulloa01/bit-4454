@@ -190,10 +190,11 @@
                                             </div>
                                         </div>    
                                         <div class="progress">
-                                            <div class="progress-bar" role="progressbar" style="width: ${percentageComplete}%;" aria-valuenow="${percentageComplete}" aria-valuemin="0" aria-valuemax="100">${percentageComplete}% peer evauations submitted.(${course.totalEvaluations - course.notCompletedEvaluations}/${course.totalEvaluations})</div>
+                                            <div class="progress-bar" role="progressbar" style="width: ${percentageComplete}%;" aria-valuenow="${percentageComplete}" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
-                                        <a href="/EditClass?session_id=${sessionId}&course_id=${course.courseId}" class="btn btn-primary mt-3">Edit Class</a>
-                                        <a href="/EditClass?session_id=${sessionId}&course_id=${course.courseId}" class="btn btn-primary mt-3">Add Peer Evaluation</a>
+                                        <small class="text-muted">${percentageComplete}% peer evauations submitted.(${course.totalEvaluations - course.notCompletedEvaluations}/${course.totalEvaluations})</small>
+                                        <a href="/EditClass?session_id=${sessionId}&course_id=${course.courseId}" class="btn btn-primary mt-3 float-left">Edit Class</a>
+                                        <a class="btn btn-primary mt-3 float-right">Add Peer Evaluation</a>
                                     </div>
                                 </div>`;
                         $('#coursesContainer').append(courseCardHtml);
