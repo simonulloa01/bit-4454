@@ -16,31 +16,6 @@
         /* SMU Red, replace with actual code */
     }
 
-    .overlay {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        /* Black background with opacity */
-        z-index: 9998;
-        /* Behind the datepicker */
-    }
-
-    .temp-datepicker {
-        position: fixed;
-        /* Stay in place */
-        z-index: 9999;
-        /* Sit on top */
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        min-width: 200px;
-        /* Minimum width */
-    }
 
     .btn-primary {
         background-color: var(--smu-blue);
@@ -242,9 +217,18 @@
         // Event delegation for dynamically added date picker button
         $(document).on('click', '#datepickerButton', function () {
             // Create a new input element
-            var $overlay = $('<div class="overlay"></div>').appendTo('body');
+            var buttonPos = $(this).offset();
+            var buttonHeight = $(this).outerHeight();
             var $input = $('<input type="text" class="temp-datepicker">').appendTo('body');
             var courseId = $(this).data('course-id');
+            
+            $input.css({
+                'position': 'absolute',
+                'top': (buttonPos.top + buttonHeight) + 'px', // Position below the button
+                'left': buttonPos.left + 'px', // Align with the button's left position
+                'z-index': 9999 // Ensure it's on top of other elements
+            });
+
             // Initialize datepicker on this new input
             $input.datepicker({
                 autoclose: true,
@@ -279,12 +263,10 @@
                     xhr.send(data); // Send the request
                     // Remove the input after use
                     $(this).remove();
-                    $overlay.remove();
                 })
                 .on('hide', function () {
                     // Remove the input when the datepicker is closed
                     $(this).remove();
-                    $overlay.remove();
                 });
 
             // Show the datepicker
