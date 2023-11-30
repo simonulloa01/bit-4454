@@ -1,4 +1,6 @@
 const mysql = require('mysql');
+const axios = require('axios');
+const { v4: uuidv4 } = require('uuid'); // for generating session UUID
 const { app } = require('@azure/functions');
 
 app.http('getProfessorInfo', {
