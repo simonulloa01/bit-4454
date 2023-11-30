@@ -16,9 +16,6 @@ app.http('PostPeerEval', {
         const DueDate = body.DueDate;
         const CourseID = body.CourseID;
 
-        if (!session_id) {
-            return { status: 400, body: session_id };
-        }
 
         // Setup your SQL connection
         const db = mysql.createConnection({
@@ -34,23 +31,26 @@ app.http('PostPeerEval', {
         //Try to post to the schedule table (ScheduleID, DueDate, CourseID) 
         try {
             const query = `
-            INSERT INTO schedule (ScheduleID, DueDate, CourseID) VALUES (?, ?, ?)
+            INSERT INTO schedule ( DueDate, CourseID) VALUES ( ?, ?)
             `;
             const queryData = [
-                body.ScheduleID,
                 body.DueDate,
                 body.CourseID
             ];
-            let [rows, fields] = await new Promise((resolve, reject) => {
+            let results = await new Promise((resolve, reject) => {
                 db.query(query, queryData, function (error, results) {
                     if (error) return reject(error);
+                    console.log(results); // Add this line to inspect the structure
                     resolve(results);
                 });
             });
-            return { status: 200, body: rows };
         } catch (error) {
             context.log(error);
-            return { status: 500, body: error };
+            return { status: 550, body: error };
+
+        } finally {
+            db.end();
         }
+        return { status: 200, body: "success" };
     }
 });
