@@ -263,6 +263,7 @@
                     xhr.send(data); // Send the request
                     // Remove the input after use
                     $(this).remove();
+                    window.location.reload();
                 })
                 .on('hide', function () {
                     // Remove the input when the datepicker is closed
