@@ -206,17 +206,19 @@
                 if (
                     this.readyState === XMLHttpRequest.DONE &&
                     this.status === 200
+
                 ) {
                     // Request finished. Do processing here.
                     console.log(xhr.responseText); // For debugging - see the response in console
                     var response = JSON.parse(xhr.responseText);
                     // reload the page
-                    window.location.reload();
+                    window.history.back();
                 }
             };
 
             var payloadData = JSON.stringify(payload); // Convert email data to JSON
-            xhr.send(data); // Send the request
+            xhr.send(payloadData); // Send the request
+
         });
 
         function generateTable(data) {
