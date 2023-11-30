@@ -227,7 +227,7 @@
                     // Handle the date change event if needed
                     var selectedDate = e.format('yyyy-mm-dd');
                     // ... additional code for what to do with the selected date ...
-
+                    var xhr = new XMLHttpRequest(); // Create a new XMLHttpRequest object
                     xhr.open("POST", "/api/PostPeerEval", true); // Replace with your Azure function URL
                     xhr.setRequestHeader("Content-Type", "application/json");
 
