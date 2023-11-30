@@ -142,6 +142,27 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function () {
+        $('.datepicker').datepicker().on('changeDate', function (e) {
+            const selectedDate = e.format('yyyy-mm-dd');
+            const courseId = $(this).data('course-id');
+
+            fetch('/api/PostPeerEval', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    DueDate: selectedDate,
+                    CourseID: courseId,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => console.log('Success:', data))
+                .catch((error) => console.error('Error:', error));
+        });
+    });
+
+    $(document).ready(function () {
         const params = new URLSearchParams(window.location.search);
         const sessionId = params.get('session');
 
@@ -194,7 +215,7 @@
                                         </div>
                                         <small class="text-muted">${percentageComplete}% peer evauations submitted.(${course.totalEvaluations - course.notCompletedEvaluations}/${course.totalEvaluations})</small>
                                         <a href="/EditClass?session_id=${sessionId}&course_id=${course.courseId}" class="btn btn-primary mt-3 float-left">Edit Class</a>
-                                        <a class="btn btn-primary mt-3 float-right">Add Peer Evaluation</a>
+                                        <input type="text" class="datepicker btn btn-primary mt-3 float-right" data-course-id="${course.courseId}" readonly>                                    
                                     </div>
                                 </div>`;
                         $('#coursesContainer').append(courseCardHtml);

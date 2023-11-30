@@ -1,4 +1,5 @@
 const { app } = require('@azure/functions');
+const { cosmosDB } = require('../../api/src/functions/post-auth');
 
 app.http('PostPeerEval', {
     methods: ['POST'],
@@ -9,11 +10,12 @@ app.http('PostPeerEval', {
         context.log('HTTP request:', request);
 
         const body = JSON.parse(await request.text())
-        const sess = body.session_id
+        // const session_id = body.session_id
+        const DueDate = body.DueDate;
+        const CourseID = body.CourseID;
 
-
-        if (!email) {
-            return { status: 400, body: email };
+        if (!session_id) {
+            return { status: 400, body: session_id };
         }
 
         // Setup your SQL connection
@@ -27,8 +29,26 @@ app.http('PostPeerEval', {
         });
 
         db.connect();
-
-
-
+        //Try to post to the schedule table (ScheduleID, DueDate, CourseID) 
+        try {
+            const query = `
+            INSERT INTO schedule (ScheduleID, DueDate, CourseID) VALUES (?, ?, ?)
+            `;
+            const queryData = [
+                body.ScheduleID,
+                body.DueDate,
+                body.CourseID
+            ];
+            let [rows, fields] = await new Promise((resolve, reject) => {
+                db.query(query, queryData, function (error, results) {
+                    if (error) return reject(error);
+                    resolve(results);
+                });
+            });
+            return { status: 200, body: rows };
+        } catch (error) {
+            context.log(error);
+            return { status: 500, body: error };
+        }
     }
 });
