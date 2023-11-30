@@ -21,6 +21,30 @@
         border-color: var(--smu-blue);
     }
 
+    .temp-datepicker {
+        position: fixed;
+        /* Stay in place */
+        z-index: 9999;
+        /* Sit on top */
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        min-width: 200px;
+        /* Minimum width */
+    }
+
+    .overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+    z-index: 9998; /* Behind the datepicker */
+}
+
     .btn-primary:hover,
     .btn-primary:focus,
     .btn-primary:active {
@@ -137,39 +161,14 @@
         </div>
 
 </body>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
 <script>
-    $(document).ready(function () {
-        var datepicker = $('#selectedDate').datepicker();
-
-        $('#datepickerButton').click(function () {
-            datepicker.datepicker('show');
-        });
-
-        datepicker.on('changeDate', function (e) {
-            const selectedDate = e.format('yyyy-mm-dd');
-            const courseId = $(this).data('course-id');
-
-            fetch('/api/PostPeerEval', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    DueDate: selectedDate,
-                    CourseID: courseId,
-                }),
-            })
-                .then(response => response.json())
-                .then(data => console.log('Success:', data))
-                .catch((error) => console.error('Error:', error));
-        });
-    });
     $(document).ready(function () {
         const params = new URLSearchParams(window.location.search);
         const sessionId = params.get('session');
@@ -196,8 +195,8 @@
                         let percentageComplete = course.totalEvaluations === 0 ? 100 : ((course.totalEvaluations - course.notCompletedEvaluations) / course.totalEvaluations) * 100;
                         let dueDatesArray = course.dueDates.split(', ');
                         let courseCardHtml = `
-                                <div class="card w-75 mb-3">
-                                    <div class="card-header bg-primary text-white">
+                        <div class="card w-75 mb-3">
+                            <div class="card-header bg-primary text-white">
                                         <strong>${course.courseName}</strong>
                                         <br>
                                         <small class=" float-left">${course.courseTime}</small>
@@ -225,7 +224,7 @@
                                         <a href="/EditClass?session_id=${sessionId}&course_id=${course.courseId}" class="btn btn-primary mt-3 float-left">Edit Class</a>
                                         <a class="btn btn-primary mt-3 float-right" id="datepickerButton" course-id="${course.courseId}">Add Peer Evaluation</a>                             
                                     </div>
-                                </div>`;
+                        </div>`;
                         $('#coursesContainer').append(courseCardHtml);
                     });
                 } else {
@@ -237,8 +236,35 @@
                 console.error('Error fetching data:', error);
                 $('#professorName').text('Error fetching data');
             });
+
+        // Event delegation for dynamically added date picker button
+        $(document).on('click', '#datepickerButton', function () {
+            var datepicker = $('#selectedDate').datepicker({
+                autoclose: true,
+                todayHighlight: true
+            });
+            datepicker.datepicker('show');
+        });
+
+        // Additional code for handling date picker change event
+        $(document).on('changeDate', '#selectedDate', function (e) {
+            const selectedDate = e.format('yyyy-mm-dd');
+            const courseId = $(this).data('course-id');
+
+            fetch('/api/PostPeerEval', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    DueDate: selectedDate,
+                    CourseID: courseId,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => console.log('Success:', data))
+                .catch((error) => console.error('Error:', error));
+        });
     });
-
 </script>
-
 </html>
