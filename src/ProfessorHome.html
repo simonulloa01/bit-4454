@@ -215,32 +215,47 @@
 
         // Event delegation for dynamically added date picker button
         $(document).on('click', '#datepickerButton', function () {
-            var datepicker = $('#selectedDate').datepicker({
+            // Create a new input element
+            var $input = $('<input type="text" class="temp-datepicker">').appendTo('body');
+
+            // Initialize datepicker on this new input
+            $input.datepicker({
                 autoclose: true,
                 todayHighlight: true
-            });
-            datepicker.datepicker('show');
-        });
-
-        // Additional code for handling date picker change event
-        $(document).on('changeDate', '#selectedDate', function (e) {
-            const selectedDate = e.format('yyyy-mm-dd');
-            const courseId = $(this).data('course-id');
-
-            fetch('/api/PostPeerEval', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    DueDate: selectedDate,
-                    CourseID: courseId,
-                }),
             })
-                .then(response => response.json())
-                .then(data => console.log('Success:', data))
-                .catch((error) => console.error('Error:', error));
+                .on('changeDate', function (e) {
+                    // Handle the date change event if needed
+                    var selectedDate = e.format('yyyy-mm-dd');
+                    var courseId = $(this).data('course-id');
+                    // ... additional code for what to do with the selected date ...
+                    fetch('/api/PostPeerEval', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            DueDate: selectedDate,
+                            CourseID: courseId,
+                        }),
+                    })
+                        .then(response => response.json())
+                        .then(data => console.log('Success:', data))
+                        .catch((error) => console.error('Error:', error));
+                    // Remove the input after use
+                    $(this).remove();
+                })
+                .on('hide', function () {
+                    // Remove the input when the datepicker is closed
+                    $(this).remove();
+                });
+
+            // Show the datepicker
+            $input.datepicker('show');
         });
+
+
+
     });
 </script>
+
 </html>
