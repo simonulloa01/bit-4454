@@ -170,7 +170,7 @@
                     $('#loadingImg').remove();
                     data.courses.forEach(course => {
                         let percentageComplete = course.totalEvaluations == null ? 0 : course.totalEvaluations === 0 ? 100 : ((course.totalEvaluations - course.notCompletedEvaluations) / course.totalEvaluations) * 100;
-                        let dueDatesArray =course.dueDates != null ? course.dueDates.split(', '): ["due date not set"];
+                        let dueDatesArray = course.dueDates != null ? course.dueDates.split(', ') : ["No Due Dates"];
                         course.totalStudents = course.totalStudents == null ? 0 : course.totalStudents;
                         course.totalGroups = course.totalGroups == null ? 0 : course.totalGroups;
                         let courseCardHtml = `
@@ -189,7 +189,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <p class="course-detail-label">Due Dates:</p>
-                                                ${dueDatesArray.map(dueDate => `<span class="badge bg-warning text-dark">${dueDate}</span>`).join(' ')}
+                                                ${dueDatesArray.map(dueDate => `<span class="badge ${dueDate == "No Due Dates" ? "bg-error" : "bg-warning"} text-dark">${dueDate}</span>`).join(' ')}
                                             </div>
                                             <div class="col-md-4">
                                                 <p class="course-detail-label">Total Students:</p>
@@ -223,7 +223,7 @@
             var buttonHeight = $(this).outerHeight();
             var $input = $('<input type="text" class="temp-datepicker">').appendTo('body');
             var courseId = $(this).data('course-id');
-            
+
             $input.css({
                 'position': 'absolute',
                 'top': (buttonPos.top + buttonHeight) + 'px', // Position below the button
