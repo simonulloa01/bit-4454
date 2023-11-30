@@ -171,6 +171,8 @@
                     data.courses.forEach(course => {
                         let percentageComplete = course.totalEvaluations == null ? 0 : course.totalEvaluations === 0 ? 100 : ((course.totalEvaluations - course.notCompletedEvaluations) / course.totalEvaluations) * 100;
                         let dueDatesArray =course.dueDates != null ? course.dueDates.split(', '): ["due date not set"];
+                        course.totalStudents = course.totalStudents == null ? 0 : course.totalStudents;
+                        course.totalGroups = course.totalGroups == null ? 0 : course.totalGroups;
                         let courseCardHtml = `
                         <div class="card w-75 mb-3">
                             <div class="card-header bg-primary text-white">
