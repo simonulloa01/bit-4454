@@ -128,22 +128,29 @@
 
 <body>
     <div class="container mt-4">
-        <h1 id="titleh1">Add students to your course.</h1>
+        <h1 id="">Add students to your course...</h1>
 
         <!-- CSV File Upload -->
-        <div class="form-group">
-            <label for="csv-file-input">Upload CSV:</label>
-            <input type="file" class="form-control-file" id="csv-file-input" accept=".csv">
+        <div class="container">
+            <!-- Form Group for File Input -->
+            <div class="form-group">
+                <label for="csv-file-input">Upload CSV:</label>
+                <input type="file" class="form-control-file" id="csv-file-input" accept=".csv">
+            </div>
+
+            <!-- Table to Preview and Edit Data -->
+            <div class="table-responsive">
+                <table class="table table-bordered" id="preview-table">
+                    <thead class="thead-light">
+                        <!-- Headers will be inserted here -->
+                    </thead>
+                    <tbody>
+                        <!-- Data rows will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <!-- Table to Preview and Edit Data -->
-        <table class="table table-bordered" id="preview-table">
-            <thead>
-                <!-- Headers will be inserted here -->
-            </thead>
-            <tbody>
-                <!-- Data rows will be inserted here -->
-            </tbody>
-        </table>
+
 
         <!-- Submit Button -->
         <button class="btn btn-primary" id="submit-btn">Submit</button>

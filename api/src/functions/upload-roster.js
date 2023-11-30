@@ -42,15 +42,13 @@ app.http('upload-students', {
                 let insertStudentQuery = `
                     INSERT INTO student (FirstName, LastName, Email) 
                     VALUES (?, ?, ?) 
-                    ON DUPLICATE KEY UPDATE 
-                    FirstName = VALUES(FirstName), 
-                    LastName = VALUES(LastName), 
+                    ON DUPLICATE KEY UPDATE
                     Email = VALUES(Email)
 
                 `;
 
                 // This assumes that your student table has an auto-increment primary key (StudentID)
-                let [result] = await new Promise((resolve, reject) => {
+                let result = await new Promise((resolve, reject) => {
                     db.query(insertStudentQuery, [student.FirstName, student.LastName, student.Email], (error, results) => {
                         if (error) return reject(error);
                         resolve(results);
@@ -69,10 +67,6 @@ app.http('upload-students', {
                 let insertStudentGroupQuery = `
                     INSERT INTO studentgroups (StudentID, CourseID, GroupID) 
                     VALUES (?, ?, ?)  
-                    ON DUPLICATE KEY UPDATE 
-                    StudentID = VALUES(StudentID), 
-                    CourseID = VALUES(CourseID), 
-                    GroupID = VALUES(GroupID);
                 `;
 
                 await new Promise((resolve, reject) => {
