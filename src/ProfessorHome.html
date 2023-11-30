@@ -140,11 +140,18 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('.datepicker').datepicker().on('changeDate', function (e) {
+        var datepicker = $('#selectedDate').datepicker();
+
+        $('#datepickerButton').click(function () {
+            datepicker.datepicker('show');
+        });
+
+        datepicker.on('changeDate', function (e) {
             const selectedDate = e.format('yyyy-mm-dd');
             const courseId = $(this).data('course-id');
 
@@ -163,7 +170,6 @@
                 .catch((error) => console.error('Error:', error));
         });
     });
-
     $(document).ready(function () {
         const params = new URLSearchParams(window.location.search);
         const sessionId = params.get('session');
@@ -217,7 +223,7 @@
                                         </div>
                                         <small class="text-muted d-flex justify-content-center">${percentageComplete}% peer evauations submitted.(${course.totalEvaluations - course.notCompletedEvaluations}/${course.totalEvaluations})</small>
                                         <a href="/EditClass?session_id=${sessionId}&course_id=${course.courseId}" class="btn btn-primary mt-3 float-left">Edit Class</a>
-                                        <input type="text" class="datepicker btn btn-primary mt-3 float-right" data-course-id="${course.courseId}" readonly>                                    
+                                        <a class="btn btn-primary mt-3 float-right" id="datepickerButton" course-id="${course.courseId}">Add Peer Evaluation</a>                             
                                     </div>
                                 </div>`;
                         $('#coursesContainer').append(courseCardHtml);
